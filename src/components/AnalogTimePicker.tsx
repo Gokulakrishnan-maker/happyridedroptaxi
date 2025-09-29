@@ -79,6 +79,7 @@ const AnalogTimePicker: React.FC<AnalogTimePickerProps> = ({
   const hourRotation = (hour % 12) * 30 - 90;
   const minuteRotation = minute * 6 - 90;
 
+  // Hour numbers (1–12)
   const renderHourNumbers = () =>
     Array.from({ length: 12 }, (_, i) => {
       const num = i + 1;
@@ -94,6 +95,26 @@ const AnalogTimePicker: React.FC<AnalogTimePickerProps> = ({
           style={{ left: `calc(50% + ${x}px)`, top: `calc(50% + ${y}px)` }}
         >
           {num}
+        </div>
+      );
+    });
+
+  // Minute numbers (00, 05, …, 55)
+  const renderMinuteNumbers = () =>
+    Array.from({ length: 12 }, (_, i) => {
+      const num = i * 5;
+      const angle = num * 6 - 90;
+      const rad = (angle * Math.PI) / 180;
+      const r = 100;
+      const x = Math.cos(rad) * r;
+      const y = Math.sin(rad) * r;
+      return (
+        <div
+          key={num}
+          className="absolute transform -translate-x-1/2 -translate-y-1/2 text-gray-700 font-medium"
+          style={{ left: `calc(50% + ${x}px)`, top: `calc(50% + ${y}px)` }}
+        >
+          {num.toString().padStart(2, "0")}
         </div>
       );
     });
@@ -150,7 +171,7 @@ const AnalogTimePicker: React.FC<AnalogTimePickerProps> = ({
             onClick={(e) => updateFromPosition(e.clientX, e.clientY)}
             className="relative w-64 h-64 bg-gray-100 rounded-full"
           >
-            {renderHourNumbers()}
+            {selectingHour ? renderHourNumbers() : renderMinuteNumbers()}
 
             {/* Hand */}
             <div
