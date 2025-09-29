@@ -7,6 +7,7 @@ import WhyChooseUs from './components/WhyChooseUs';
 import PopularRoutes from './components/PopularRoutes';
 import Pricing from './components/Pricing';
 import Testimonials from './components/Testimonials';
+import TamilNaduDestinations from './components/TamilNaduDestinations';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import WhatsAppButton from './components/WhatsAppButton';
@@ -23,6 +24,7 @@ function App() {
         <WhyChooseUs />
         <PopularRoutes />
         <Pricing />
+        <TamilNaduDestinations />
         <Testimonials />
         <Contact />
         <Footer />

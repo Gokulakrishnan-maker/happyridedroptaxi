@@ -1,0 +1,228 @@
+import React from 'react';
+import { MapPin, Camera, Clock, Star } from 'lucide-react';
+
+const TamilNaduDestinations: React.FC = () => {
+  const destinations = [
+    {
+      name: 'Meenakshi Temple, Madurai',
+      image: 'https://images.pexels.com/photos/3573382/pexels-photo-3573382.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop',
+      category: 'Temple',
+      description: 'Ancient Dravidian architecture marvel with intricate sculptures',
+      distance: '460 km from Chennai',
+      duration: '7-8 hours',
+      highlights: ['Historic Temple', 'Architecture', 'Spiritual']
+    },
+    {
+      name: 'Brihadeeswarar Temple, Thanjavur',
+      image: 'https://images.pexels.com/photos/9166266/pexels-photo-9166266.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop',
+      category: 'Temple',
+      description: 'UNESCO World Heritage Site and architectural masterpiece',
+      distance: '350 km from Chennai',
+      duration: '6-7 hours',
+      highlights: ['UNESCO Site', 'Chola Architecture', 'Heritage']
+    },
+    {
+      name: 'Ooty Hill Station',
+      image: 'https://images.pexels.com/photos/1271619/pexels-photo-1271619.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop',
+      category: 'Hill Station',
+      description: 'Queen of Hill Stations with tea gardens and cool climate',
+      distance: '540 km from Chennai',
+      duration: '9-10 hours',
+      highlights: ['Tea Gardens', 'Cool Climate', 'Scenic Beauty']
+    },
+    {
+      name: 'Rameswaram Temple',
+      image: 'https://images.pexels.com/photos/8078361/pexels-photo-8078361.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop',
+      category: 'Temple',
+      description: 'Sacred pilgrimage site with longest temple corridor in India',
+      distance: '560 km from Chennai',
+      duration: '9-10 hours',
+      highlights: ['Pilgrimage', 'Sacred Waters', 'Island Temple']
+    },
+    {
+      name: 'Kanyakumari',
+      image: 'https://images.pexels.com/photos/3573382/pexels-photo-3573382.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop',
+      category: 'Tourist Place',
+      description: 'Southernmost tip of India where three seas meet',
+      distance: '700 km from Chennai',
+      duration: '12 hours',
+      highlights: ['Sunrise & Sunset', 'Three Seas', 'Vivekananda Rock']
+    },
+    {
+      name: 'Pondicherry',
+      image: 'https://images.pexels.com/photos/3573382/pexels-photo-3573382.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop',
+      category: 'City',
+      description: 'French colonial charm with beautiful beaches and cafes',
+      distance: '160 km from Chennai',
+      duration: '3-4 hours',
+      highlights: ['French Quarter', 'Beaches', 'Cafes']
+    },
+    {
+      name: 'Kodaikanal',
+      image: 'https://images.pexels.com/photos/1271619/pexels-photo-1271619.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop',
+      category: 'Hill Station',
+      description: 'Princess of Hill Stations with pristine lakes and valleys',
+      distance: '520 km from Chennai',
+      duration: '8-9 hours',
+      highlights: ['Lake Views', 'Cool Weather', 'Nature Walks']
+    },
+    {
+      name: 'Tirupati Balaji Temple',
+      image: 'https://images.pexels.com/photos/9166266/pexels-photo-9166266.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop',
+      category: 'Temple',
+      description: 'Most visited Hindu temple in the world',
+      distance: '150 km from Chennai',
+      duration: '3 hours',
+      highlights: ['Sacred Pilgrimage', 'Lord Venkateswara', 'Spiritual']
+    },
+    {
+      name: 'Coimbatore',
+      image: 'https://images.pexels.com/photos/3573382/pexels-photo-3573382.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop',
+      category: 'City',
+      description: 'Manchester of South India with textile industry and temples',
+      distance: '500 km from Chennai',
+      duration: '8-9 hours',
+      highlights: ['Industrial Hub', 'Temples', 'Gateway to Kerala']
+    }
+  ];
+
+  const getCategoryIcon = (category: string) => {
+    switch (category) {
+      case 'Temple':
+        return '🛕';
+      case 'Hill Station':
+        return '🏔️';
+      case 'City':
+        return '🏙️';
+      case 'Tourist Place':
+        return '🏖️';
+      default:
+        return '📍';
+    }
+  };
+
+  const getCategoryColor = (category: string) => {
+    switch (category) {
+      case 'Temple':
+        return 'bg-orange-100 text-orange-800 border-orange-200';
+      case 'Hill Station':
+        return 'bg-green-100 text-green-800 border-green-200';
+      case 'City':
+        return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'Tourist Place':
+        return 'bg-purple-100 text-purple-800 border-purple-200';
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-200';
+    }
+  };
+
+  return (
+    <section className="py-20 bg-white">
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl font-bold text-gray-800 mb-4">Explore Tamil Nadu's Treasures</h2>
+          <p className="text-gray-600 text-lg max-w-3xl mx-auto">
+            Discover the rich heritage, stunning temples, scenic hill stations, and vibrant cities of Tamil Nadu. 
+            We provide comfortable taxi services to all these amazing destinations.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {destinations.map((destination, index) => (
+            <div 
+              key={index}
+              className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden hover:-translate-y-2"
+            >
+              <div className="relative h-64 overflow-hidden">
+                <img
+                  src={destination.image}
+                  alt={destination.name}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  loading="lazy"
+                />
+                <div className="absolute top-4 left-4">
+                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold border ${getCategoryColor(destination.category)}`}>
+                    <span className="mr-1">{getCategoryIcon(destination.category)}</span>
+                    {destination.category}
+                  </span>
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              </div>
+
+              <div className="p-6">
+                <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-blue-600 transition-colors">
+                  {destination.name}
+                </h3>
+                <p className="text-gray-600 mb-4 leading-relaxed">
+                  {destination.description}
+                </p>
+
+                <div className="space-y-3 mb-4">
+                  <div className="flex items-center text-sm text-gray-600">
+                    <MapPin className="w-4 h-4 mr-2 text-blue-500" />
+                    <span>{destination.distance}</span>
+                  </div>
+                  <div className="flex items-center text-sm text-gray-600">
+                    <Clock className="w-4 h-4 mr-2 text-emerald-500" />
+                    <span>{destination.duration}</span>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap gap-2 mb-6">
+                  {destination.highlights.map((highlight, highlightIndex) => (
+                    <span 
+                      key={highlightIndex}
+                      className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full"
+                    >
+                      {highlight}
+                    </span>
+                  ))}
+                </div>
+
+                <button 
+                  onClick={() => {
+                    const element = document.getElementById('booking');
+                    if (element) {
+                      element.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }}
+                  className="w-full py-3 bg-gradient-to-r from-blue-600 to-emerald-600 text-white rounded-lg hover:from-blue-700 hover:to-emerald-700 transition-all duration-300 font-semibold flex items-center justify-center group"
+                >
+                  <Camera className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
+                  Book Trip to {destination.name.split(',')[0]}
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="text-center mt-16">
+          <div className="bg-gradient-to-r from-blue-50 to-emerald-50 rounded-xl p-8 max-w-4xl mx-auto">
+            <Star className="w-12 h-12 text-blue-600 mx-auto mb-4" />
+            <h3 className="text-2xl font-bold text-gray-800 mb-4">Plan Your Tamil Nadu Adventure</h3>
+            <p className="text-gray-600 mb-6 leading-relaxed">
+              From ancient temples to scenic hill stations, Tamil Nadu offers incredible diversity. 
+              Our experienced drivers know the best routes and can guide you to hidden gems along the way.
+            </p>
+            <div className="grid md:grid-cols-3 gap-6 text-center">
+              <div>
+                <div className="text-2xl font-bold text-blue-600 mb-1">50+</div>
+                <div className="text-gray-600">Destinations Covered</div>
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-emerald-600 mb-1">1000+</div>
+                <div className="text-gray-600">Happy Travelers</div>
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-orange-600 mb-1">24/7</div>
+                <div className="text-gray-600">Service Available</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default TamilNaduDestinations;
