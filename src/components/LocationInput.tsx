@@ -40,27 +40,28 @@ const LocationInput: React.FC<LocationInputProps> = ({
         );
 
         // Add place changed listener
-      autocompleteRef.current.addListener('place_changed', () => {
-  const place = autocompleteRef.current?.getPlace();
+        autocompleteRef.current.addListener('place_changed', () => {
+          const place = autocompleteRef.current?.getPlace();
 
-  if (place && place.formatted_address) {
-    const coordinates = place.geometry?.location
-      ? {
-          lat: place.geometry.location.lat(),
-          lng: place.geometry.location.lng(),
-        }
-      : undefined;
+          if (place && place.formatted_address) {
+            const coordinates = place.geometry?.location
+              ? {
+                  lat: place.geometry.location.lat(),
+                  lng: place.geometry.location.lng()
+                }
+              : undefined;
 
-    onChange(place.formatted_address, coordinates);
-  }
+            onChange(place.formatted_address, coordinates);
+          } else {
+            console.warn('Google Autocomplete: no place data returned');
+          }
 
-  // ✅ Always hide spinner
-  setIsLoading(false);
-});
-
-
+          // ✅ Always stop spinner
+          setIsLoading(false);
+        });
       } catch (error) {
         console.error('Error initializing Google Maps Autocomplete:', error);
+        setIsLoading(false);
       }
     };
 
@@ -82,26 +83,33 @@ const LocationInput: React.FC<LocationInputProps> = ({
 
     return () => {
       if (autocompleteRef.current) {
-        window.google?.maps?.event?.clearInstanceListeners(autocompleteRef.current);
+        window.google?.maps?.event?.clearInstanceListeners(
+          autocompleteRef.current
+        );
       }
     };
   }, [onChange]);
 
-const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const newValue = e.target.value;
-  onChange(newValue);
+  // 🔹 Input handler with fallback timeout
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    onChange(newValue);
 
-  if (newValue.length > 2) {
-    setIsLoading(true);
+    if (newValue.length > 2) {
+      setIsLoading(true);
 
-    // ✅ Auto-hide spinner if nothing comes back
-    setTimeout(() => {
+      // ✅ Auto-hide spinner if nothing comes back
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 2000);
+    } else {
       setIsLoading(false);
-    }, 2000);
-  } else {
+    }
+  };
+
+  const handleFocus = () => {
     setIsLoading(false);
-  }
-};
+  };
 
   return (
     <div>
