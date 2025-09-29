@@ -71,7 +71,7 @@ const BookingForm: React.FC = () => {
     setSubmitMessage('');
 
     try {
-      const response = await fetch('/api/book', {
+      const response = await fetch('http://localhost:3001/api/book', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -94,11 +94,18 @@ const BookingForm: React.FC = () => {
           name: '',
           phone: '',
         });
+        setErrors([]);
       } else {
-        setSubmitMessage(result.message || 'Failed to submit booking. Please try again.');
+        if (result.errors && Array.isArray(result.errors)) {
+          setErrors(result.errors);
+          setSubmitMessage('Please fix the errors and try again.');
+        } else {
+          setSubmitMessage(result.message || 'Failed to submit booking. Please try again.');
+        }
       }
     } catch (error) {
-      setSubmitMessage('Network error. Please check your connection and try again.');
+      console.error('Booking error:', error);
+      setSubmitMessage('Unable to connect to server. Please try again or call us directly.');
     } finally {
       setIsLoading(false);
     }
