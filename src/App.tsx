@@ -10,6 +10,7 @@ import Testimonials from './components/Testimonials';
 import TamilNaduDestinations from './components/TamilNaduDestinations';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
+import FareDetails from './components/FareDetails';
 import WhatsAppButton from './components/WhatsAppButton';
 import SEO from './components/SEO';
 
@@ -27,6 +28,7 @@ function App() {
         <TamilNaduDestinations />
         <Testimonials />
         <Contact />
+        <FareDetails />
         <Footer />
         <WhatsAppButton />
       </div>

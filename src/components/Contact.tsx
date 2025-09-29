@@ -17,9 +17,9 @@ const Contact: React.FC = () => {
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
+        <div className="max-w-4xl mx-auto">
           {/* Contact Information */}
-          <div>
+          <div className="mx-auto">
             <h3 className="text-2xl font-bold text-gray-800 mb-8">Contact Information</h3>
             
             <div className="space-y-6">
@@ -83,58 +83,8 @@ const Contact: React.FC = () => {
                 </div>
               </div>
             </div>
-          </div>
-
-          {/* Quick Contact Form */}
-          <div>
-            <h3 className="text-2xl font-bold text-gray-800 mb-8">Quick Inquiry</h3>
             
-            <form className="space-y-6">
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Name</label>
-                <input
-                  type="text"
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
-                  placeholder="Your full name"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Phone Number</label>
-                <input
-                  type="tel"
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
-                  placeholder="Your phone number"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Email (Optional)</label>
-                <input
-                  type="email"
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
-                  placeholder="Your email address"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Message</label>
-                <textarea
-                  rows={4}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors resize-none"
-                  placeholder="How can we help you?"
-                ></textarea>
-              </div>
-
-              <button
-                type="submit"
-                className="w-full py-4 bg-gradient-to-r from-blue-600 to-emerald-600 text-white rounded-lg hover:from-blue-700 hover:to-emerald-700 transition-all duration-300 font-semibold"
-              >
-                Send Message
-              </button>
-            </form>
-
-            <div className="mt-8 text-center">
+            <div className="mt-12 text-center">
               <p className="text-gray-600 mb-4">For immediate assistance, call us or chat on WhatsApp</p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <a
