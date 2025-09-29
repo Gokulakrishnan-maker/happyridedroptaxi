@@ -41,12 +41,13 @@ const TamilNaduDestinations: React.FC = () => {
     },
     {
       name: 'Kanyakumari',
-      image: 'https://images.pexels.com/photos/3573382/pexels-photo-3573382.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop',
-      category: 'Tourist Place',
-      description: 'Southernmost tip of India where three seas meet',
-      distance: '700 km from Chennai',
-      duration: '12 hours',
-      highlights: ['Sunrise & Sunset', 'Three Seas', 'Vivekananda Rock']
+      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSVYkyFjgbLCZ9CbI90sWef31in22ymqHp-KQ&s',
+      distance: '450 km',
+      duration: '8-9 hours',
+      description: 'Southernmost tip with Thiruvalluvar Statue',
+      fare: '₹7,500',
+      icon: Waves,
+      highlights: ['Thiruvalluvar Statue', 'Sunset Point', 'Vivekananda Rock', 'Beach']
     },
     {
       name: 'Pondicherry',
@@ -59,12 +60,13 @@ const TamilNaduDestinations: React.FC = () => {
     },
     {
       name: 'Kodaikanal',
-      image: 'https://images.pexels.com/photos/1271619/pexels-photo-1271619.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop',
-      category: 'Hill Station',
-      description: 'Princess of Hill Stations with pristine lakes and valleys',
-      distance: '520 km from Chennai',
-      duration: '8-9 hours',
-      highlights: ['Lake Views', 'Cool Weather', 'Nature Walks']
+      image: 'https://images.pexels.com/photos/1450360/pexels-photo-1450360.jpeg?auto=compress&cs=tinysrgb&w=400',
+      distance: '180 km',
+      duration: '4 hours',
+      description: 'Princess of Hill Stations with pristine lakes',
+      fare: '₹3,500',
+      icon: Mountain,
+      highlights: ['Kodai Lake', 'Coakers Walk', 'Bryant Park', 'Pillar Rocks']
     },
     {
       name: 'Tirupati Balaji Temple',
@@ -83,7 +85,17 @@ const TamilNaduDestinations: React.FC = () => {
       distance: '500 km from Chennai',
       duration: '8-9 hours',
       highlights: ['Industrial Hub', 'Temples', 'Gateway to Kerala']
-    }
+    },
+    {
+    name: 'Trichy',
+    image: 'https://images.pexels.com/photos/9166266/pexels-photo-9166266.jpeg?auto=compress&cs=tinysrgb&w=400',
+    distance: '320 km from Chennai',
+    duration: '5-6 hours',
+    description: 'Historic city with Rock Fort and bustling markets',
+    fare: '₹4,500',
+    icon: Building,
+    highlights: ['Rock Fort', 'Market Streets', 'Temples', 'Cultural Sites']
+   }
   ];
 
   const getCategoryIcon = (category: string) => {
