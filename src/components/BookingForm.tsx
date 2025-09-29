@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Select from 'react-select';
 import { MapPin, Calendar, Clock, Car, User, Phone, Send, AlertCircle, Navigation } from 'lucide-react';
 import { BookingFormData, ValidationError, BookingResponse } from '../types/booking';
 import LocationInput from './LocationInput';
@@ -26,164 +27,40 @@ const BookingForm: React.FC = () => {
 
   const { calculateDistance, calculateHaversineDistance, isCalculating } = useDistanceCalculation();
 
+  // Updated car types with actual images
   const carTypes = [
-    { value: 'sedan', label: 'Sedan', description: 'Comfortable for 4 passengers' },
-    { value: 'suv', label: 'SUV', description: 'Spacious for 6-7 passengers' },
-    { value: 'etios', label: 'Etios', description: 'Economic choice for 4 passengers' },
-    { value: 'innova', label: 'Innova', description: 'Premium comfort for 6-7 passengers' },
+    { value: 'sedan', label: 'Sedan', description: 'Comfortable for 4 passengers', image: '/cars/sedan.png' },
+    { value: 'etios', label: 'Etios', description: 'Economic choice for 4 passengers', image: '/cars/etios.png' },
+    { value: 'suv', label: 'SUV', description: 'Spacious for 6-7 passengers', image: '/cars/suv.png' },
+    { value: 'innova', label: 'Innova', description: 'Premium comfort for 6-7 passengers', image: '/cars/innova.png' },
   ];
 
-  const validateForm = (): boolean => {
-    const newErrors: ValidationError[] = [];
+  // React-select options
+  const carOptions = carTypes.map(car => ({
+    value: car.value,
+    label: car.label,
+    description: car.description,
+    image: car.image,
+  }));
 
-    if (!formData.pickupLocation.trim()) {
-      newErrors.push({ field: 'pickupLocation', message: 'Pickup location is required' });
-    }
+  const customOption = ({ innerProps, data }: any) => (
+    <div {...innerProps} className="flex items-center p-2 hover:bg-gray-100 cursor-pointer">
+      <img src={data.image} alt={data.label} className="w-8 h-8 mr-2" />
+      <div>
+        <div className="font-semibold">{data.label}</div>
+        <div className="text-sm text-gray-500">{data.description}</div>
+      </div>
+    </div>
+  );
 
-    if (!formData.dropLocation.trim()) {
-      newErrors.push({ field: 'dropLocation', message: 'Drop location is required' });
-    }
+  const customSingleValue = ({ data }: any) => (
+    <div className="flex items-center">
+      <img src={data.image} alt={data.label} className="w-6 h-6 mr-2" />
+      <span>{data.label}</span>
+    </div>
+  );
 
-    if (!formData.date) {
-      newErrors.push({ field: 'date', message: 'Date is required' });
-    }
-
-    if (!formData.time) {
-      newErrors.push({ field: 'time', message: 'Time is required' });
-    }
-
-    if (!formData.name.trim()) {
-      newErrors.push({ field: 'name', message: 'Name is required' });
-    }
-
-    if (!formData.phone.trim()) {
-      newErrors.push({ field: 'phone', message: 'Phone number is required' });
-    } else if (!/^\+?[\d\s-()]{10,}$/.test(formData.phone)) {
-      newErrors.push({ field: 'phone', message: 'Please enter a valid phone number' });
-    }
-
-    // Distance validation using calculated or estimated distance
-    const distanceToCheck = calculatedDistance || (pickupCoords && dropCoords ? 
-      calculateHaversineDistance(pickupCoords, dropCoords) : 0);
-    
-    if (formData.tripType === 'one-way' && distanceToCheck < 130) {
-      newErrors.push({ field: 'distance', message: 'One-way trips require minimum 130 km distance' });
-    }
-
-    if (formData.tripType === 'round-trip' && distanceToCheck < 250) {
-      newErrors.push({ field: 'distance', message: 'Round-trip bookings require minimum 250 km distance' });
-    }
-
-    setErrors(newErrors);
-    return newErrors.length === 0;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!validateForm()) {
-      setSubmitMessage('Please fix the errors above and try again.');
-      return;
-    }
-
-    setIsLoading(true);
-    setSubmitMessage('');
-
-    try {
-      // Include distance information in the booking data
-      const bookingDataWithDistance = {
-        ...formData,
-        distance: calculatedDistance,
-        estimatedDuration,
-        pickupCoordinates: pickupCoords,
-        dropCoordinates: dropCoords
-      };
-
-      const response = await fetch('/api/book', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(bookingDataWithDistance),
-      });
-
-      const result: BookingResponse = await response.json();
-
-      if (result.success) {
-        setSubmitMessage('Booking request submitted successfully! We will contact you shortly.');
-        // Reset form
-        setFormData({
-          pickupLocation: '',
-          dropLocation: '',
-          tripType: 'one-way',
-          date: '',
-          time: '',
-          carType: 'sedan',
-          name: '',
-          phone: '',
-        });
-        setPickupCoords(null);
-        setDropCoords(null);
-        setCalculatedDistance(null);
-        setEstimatedDuration('');
-      } else {
-        setSubmitMessage(result.message || 'Failed to submit booking. Please try again.');
-      }
-    } catch (error) {
-      setSubmitMessage('Network error. Please check your connection and try again.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleInputChange = (field: keyof BookingFormData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    // Clear error for this field
-    setErrors(prev => prev.filter(error => error.field !== field));
-  };
-
-  const handleLocationChange = async (
-    field: 'pickupLocation' | 'dropLocation',
-    value: string,
-    coordinates?: { lat: number; lng: number }
-  ) => {
-    handleInputChange(field, value);
-    
-    if (field === 'pickupLocation') {
-      setPickupCoords(coordinates || null);
-    } else {
-      setDropCoords(coordinates || null);
-    }
-
-    // Calculate distance when both locations are selected
-    if (coordinates) {
-      const otherCoords = field === 'pickupLocation' ? dropCoords : pickupCoords;
-      const currentCoords = coordinates;
-      
-      if (otherCoords && currentCoords) {
-        try {
-          const result = await calculateDistance(
-            field === 'pickupLocation' ? currentCoords : otherCoords,
-            field === 'pickupLocation' ? otherCoords : currentCoords
-          );
-          setCalculatedDistance(result.distance);
-          setEstimatedDuration(result.duration);
-        } catch (error) {
-          // Fallback to Haversine calculation
-          const fallbackDistance = calculateHaversineDistance(
-            field === 'pickupLocation' ? currentCoords : otherCoords,
-            field === 'pickupLocation' ? otherCoords : currentCoords
-          );
-          setCalculatedDistance(fallbackDistance);
-          setEstimatedDuration('Estimated');
-        }
-      }
-    }
-  };
-
-  const getFieldError = (field: string): string | undefined => {
-    return errors.find(error => error.field === field)?.message;
-  };
+  // ... keep your validateForm, handleSubmit, handleInputChange, handleLocationChange, getFieldError as before
 
   return (
     <section id="booking" className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
@@ -265,115 +142,22 @@ const BookingForm: React.FC = () => {
                   </select>
                 </div>
 
-                {/* Car Type */}
+                {/* Car Type with images */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
                     <Car className="inline w-4 h-4 mr-2" />
                     Car Type
                   </label>
-                  <select
-                    value={formData.carType}
-                    onChange={(e) => handleInputChange('carType', e.target.value as any)}
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
-                  >
-                    {carTypes.map(car => (
-                      <option key={car.value} value={car.value}>
-                        {car.label} - {car.description}
-                      </option>
-                    ))}
-                  </select>
+                  <Select
+                    options={carOptions}
+                    value={carOptions.find(opt => opt.value === formData.carType)}
+                    onChange={(selected: any) => handleInputChange('carType', selected.value)}
+                    components={{ Option: customOption, SingleValue: customSingleValue }}
+                  />
                 </div>
 
-                {/* Date */}
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    <Calendar className="inline w-4 h-4 mr-2" />
-                    Date
-                  </label>
-                  <input
-                    type="date"
-                    value={formData.date}
-                    onChange={(e) => handleInputChange('date', e.target.value)}
-                    min={new Date().toISOString().split('T')[0]}
-                    className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
-                      getFieldError('date') ? 'border-red-300' : 'border-gray-300'
-                    }`}
-                  />
-                  {getFieldError('date') && (
-                    <p className="text-red-500 text-sm mt-1 flex items-center">
-                      <AlertCircle className="w-4 h-4 mr-1" />
-                      {getFieldError('date')}
-                    </p>
-                  )}
-                </div>
+                {/* Date, Time, Name, Phone ... keep your current inputs */}
 
-                {/* Time */}
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    <Clock className="inline w-4 h-4 mr-2" />
-                    Time
-                  </label>
-                  <input
-                    type="time"
-                    value={formData.time}
-                    onChange={(e) => handleInputChange('time', e.target.value)}
-                    className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
-                      getFieldError('time') ? 'border-red-300' : 'border-gray-300'
-                    }`}
-                  />
-                  {getFieldError('time') && (
-                    <p className="text-red-500 text-sm mt-1 flex items-center">
-                      <AlertCircle className="w-4 h-4 mr-1" />
-                      {getFieldError('time')}
-                    </p>
-                  )}
-                </div>
-
-                {/* Name */}
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    <User className="inline w-4 h-4 mr-2" />
-                    Full Name
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.name}
-                    onChange={(e) => handleInputChange('name', e.target.value)}
-                    className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
-                      getFieldError('name') ? 'border-red-300' : 'border-gray-300'
-                    }`}
-                    placeholder="Enter your full name"
-                  />
-                  {getFieldError('name') && (
-                    <p className="text-red-500 text-sm mt-1 flex items-center">
-                      <AlertCircle className="w-4 h-4 mr-1" />
-                      {getFieldError('name')}
-                    </p>
-                  )}
-                </div>
-
-                {/* Phone */}
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    <Phone className="inline w-4 h-4 mr-2" />
-                    Phone Number
-                  </label>
-                  <input
-                    type="tel"
-                    value={formData.phone}
-                    onChange={(e) => handleInputChange('phone', e.target.value)}
-                    className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
-                      getFieldError('phone') ? 'border-red-300' : 'border-gray-300'
-                    }`}
-                    placeholder="Enter your phone number"
-                  />
-                  {getFieldError('phone') && (
-                    <p className="text-red-500 text-sm mt-1 flex items-center">
-                      <AlertCircle className="w-4 h-4 mr-1" />
-                      {getFieldError('phone')}
-                    </p>
-                  )}
-                </div>
               </div>
 
               {/* Distance Error */}
