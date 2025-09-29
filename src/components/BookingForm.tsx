@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { MapPin, Calendar, Clock, Car, User, Phone, Send, AlertCircle } from 'lucide-react';
+import { MapPin, Calendar, Clock, Car, User, Phone, Send, AlertCircle, Navigation } from 'lucide-react';
 import { BookingFormData, ValidationError, BookingResponse } from '../types/booking';
 import LocationInput from './LocationInput';
+import { useDistanceCalculation } from '../hooks/useDistanceCalculation';
 
 const BookingForm: React.FC = () => {
   const [formData, setFormData] = useState<BookingFormData>({
@@ -18,12 +19,18 @@ const BookingForm: React.FC = () => {
   const [errors, setErrors] = useState<ValidationError[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [submitMessage, setSubmitMessage] = useState<string>('');
+  const [pickupCoords, setPickupCoords] = useState<{lat: number; lng: number} | null>(null);
+  const [dropCoords, setDropCoords] = useState<{lat: number; lng: number} | null>(null);
+  const [calculatedDistance, setCalculatedDistance] = useState<number | null>(null);
+  const [estimatedDuration, setEstimatedDuration] = useState<string>('');
+
+  const { calculateDistance, calculateHaversineDistance, isCalculating } = useDistanceCalculation();
 
   const carTypes = [
-    { value: 'sedan', label: 'Sedan', price: '₹12/km', description: 'Comfortable for 4 passengers' },
-    { value: 'suv', label: 'SUV', price: '₹15/km', description: 'Spacious for 6-7 passengers' },
-    { value: 'etios', label: 'Etios', price: '₹10/km', description: 'Economic choice for 4 passengers' },
-    { value: 'innova', label: 'Innova', price: '₹18/km', description: 'Premium comfort for 6-7 passengers' },
+    { value: 'sedan', label: 'Sedan', description: 'Comfortable for 4 passengers' },
+    { value: 'suv', label: 'SUV', description: 'Spacious for 6-7 passengers' },
+    { value: 'etios', label: 'Etios', description: 'Economic choice for 4 passengers' },
+    { value: 'innova', label: 'Innova', description: 'Premium comfort for 6-7 passengers' },
   ];
 
   const validateForm = (): boolean => {
@@ -55,6 +62,18 @@ const BookingForm: React.FC = () => {
       newErrors.push({ field: 'phone', message: 'Please enter a valid phone number' });
     }
 
+    // Distance validation using calculated or estimated distance
+    const distanceToCheck = calculatedDistance || (pickupCoords && dropCoords ? 
+      calculateHaversineDistance(pickupCoords, dropCoords) : 0);
+    
+    if (formData.tripType === 'one-way' && distanceToCheck < 130) {
+      newErrors.push({ field: 'distance', message: 'One-way trips require minimum 130 km distance' });
+    }
+
+    if (formData.tripType === 'round-trip' && distanceToCheck < 250) {
+      newErrors.push({ field: 'distance', message: 'Round-trip bookings require minimum 250 km distance' });
+    }
+
     setErrors(newErrors);
     return newErrors.length === 0;
   };
@@ -71,12 +90,21 @@ const BookingForm: React.FC = () => {
     setSubmitMessage('');
 
     try {
-      const response = await fetch('http://localhost:3001/api/book', {
+      // Include distance information in the booking data
+      const bookingDataWithDistance = {
+        ...formData,
+        distance: calculatedDistance,
+        estimatedDuration,
+        pickupCoordinates: pickupCoords,
+        dropCoordinates: dropCoords
+      };
+
+      const response = await fetch('/api/book', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(bookingDataWithDistance),
       });
 
       const result: BookingResponse = await response.json();
@@ -94,18 +122,15 @@ const BookingForm: React.FC = () => {
           name: '',
           phone: '',
         });
-        setErrors([]);
+        setPickupCoords(null);
+        setDropCoords(null);
+        setCalculatedDistance(null);
+        setEstimatedDuration('');
       } else {
-        if (result.errors && Array.isArray(result.errors)) {
-          setErrors(result.errors);
-          setSubmitMessage('Please fix the errors and try again.');
-        } else {
-          setSubmitMessage(result.message || 'Failed to submit booking. Please try again.');
-        }
+        setSubmitMessage(result.message || 'Failed to submit booking. Please try again.');
       }
     } catch (error) {
-      console.error('Booking error:', error);
-      setSubmitMessage('Unable to connect to server. Please try again or call us directly.');
+      setSubmitMessage('Network error. Please check your connection and try again.');
     } finally {
       setIsLoading(false);
     }
@@ -117,32 +142,66 @@ const BookingForm: React.FC = () => {
     setErrors(prev => prev.filter(error => error.field !== field));
   };
 
+  const handleLocationChange = async (
+    field: 'pickupLocation' | 'dropLocation',
+    value: string,
+    coordinates?: { lat: number; lng: number }
+  ) => {
+    handleInputChange(field, value);
+    
+    if (field === 'pickupLocation') {
+      setPickupCoords(coordinates || null);
+    } else {
+      setDropCoords(coordinates || null);
+    }
+
+    // Calculate distance when both locations are selected
+    if (coordinates) {
+      const otherCoords = field === 'pickupLocation' ? dropCoords : pickupCoords;
+      const currentCoords = coordinates;
+      
+      if (otherCoords && currentCoords) {
+        try {
+          const result = await calculateDistance(
+            field === 'pickupLocation' ? currentCoords : otherCoords,
+            field === 'pickupLocation' ? otherCoords : currentCoords
+          );
+          setCalculatedDistance(result.distance);
+          setEstimatedDuration(result.duration);
+        } catch (error) {
+          // Fallback to Haversine calculation
+          const fallbackDistance = calculateHaversineDistance(
+            field === 'pickupLocation' ? currentCoords : otherCoords,
+            field === 'pickupLocation' ? otherCoords : currentCoords
+          );
+          setCalculatedDistance(fallbackDistance);
+          setEstimatedDuration('Estimated');
+        }
+      }
+    }
+  };
+
   const getFieldError = (field: string): string | undefined => {
     return errors.find(error => error.field === field)?.message;
   };
 
   return (
-    <section id="booking" className="py-20 bg-white">
+    <section id="booking" className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-800 mb-4">Book Your Taxi</h2>
-            <p className="text-gray-600 text-lg">Quick and easy online booking</p>
+            <h2 className="text-4xl font-bold text-gray-800 mb-4">Book Your Ride</h2>
+            <p className="text-gray-600 text-lg">Fill in the details below to book your taxi</p>
           </div>
 
-          <div className="bg-white rounded-xl shadow-xl border border-gray-200 p-8">
+          <div className="bg-white rounded-2xl shadow-2xl p-8 md:p-12">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid md:grid-cols-2 gap-6">
                 {/* Pickup Location */}
                 <LocationInput
                   label="Pickup Location"
                   value={formData.pickupLocation}
-                  onChange={(value, coordinates) => {
-                    handleInputChange('pickupLocation', value);
-                    if (coordinates) {
-                      setFormData(prev => ({ ...prev, pickupCoordinates: coordinates }));
-                    }
-                  }}
+                  onChange={(value, coords) => handleLocationChange('pickupLocation', value, coords)}
                   placeholder="Enter pickup location"
                   error={getFieldError('pickupLocation')}
                   icon={<MapPin className="inline w-4 h-4 mr-2 text-blue-600" />}
@@ -152,16 +211,44 @@ const BookingForm: React.FC = () => {
                 <LocationInput
                   label="Drop Location"
                   value={formData.dropLocation}
-                  onChange={(value, coordinates) => {
-                    handleInputChange('dropLocation', value);
-                    if (coordinates) {
-                      setFormData(prev => ({ ...prev, dropCoordinates: coordinates }));
-                    }
-                  }}
+                  onChange={(value, coords) => handleLocationChange('dropLocation', value, coords)}
                   placeholder="Enter drop location"
                   error={getFieldError('dropLocation')}
-                  icon={<MapPin className="inline w-4 h-4 mr-2 text-red-600" />}
+                  icon={<MapPin className="inline w-4 h-4 mr-2 text-emerald-600" />}
                 />
+              </div>
+
+              {/* Distance Information */}
+              {(calculatedDistance || isCalculating) && (
+                <div className="bg-gradient-to-r from-blue-50 to-emerald-50 p-4 rounded-lg border border-blue-200">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <Navigation className="w-5 h-5 text-blue-600" />
+                      <span className="font-semibold text-gray-800">Distance Information</span>
+                    </div>
+                    {isCalculating && (
+                      <div className="flex items-center space-x-2 text-blue-600">
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                        <span className="text-sm">Calculating...</span>
+                      </div>
+                    )}
+                  </div>
+                  {calculatedDistance && (
+                    <div className="mt-2 grid grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <span className="text-gray-600">Distance: </span>
+                        <span className="font-semibold text-gray-800">{calculatedDistance} km</span>
+                      </div>
+                      <div>
+                        <span className="text-gray-600">Duration: </span>
+                        <span className="font-semibold text-gray-800">{estimatedDuration}</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div className="grid md:grid-cols-2 gap-6">
 
                 {/* Trip Type */}
                 <div>
@@ -191,7 +278,7 @@ const BookingForm: React.FC = () => {
                   >
                     {carTypes.map(car => (
                       <option key={car.value} value={car.value}>
-                        {car.label} ({car.price}) - {car.description}
+                        {car.label} - {car.description}
                       </option>
                     ))}
                   </select>
@@ -288,6 +375,16 @@ const BookingForm: React.FC = () => {
                   )}
                 </div>
               </div>
+
+              {/* Distance Error */}
+              {getFieldError('distance') && (
+                <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded">
+                  <p className="text-red-700 flex items-center">
+                    <AlertCircle className="w-5 h-5 mr-2" />
+                    {getFieldError('distance')}
+                  </p>
+                </div>
+              )}
 
               {/* Submit Message */}
               {submitMessage && (

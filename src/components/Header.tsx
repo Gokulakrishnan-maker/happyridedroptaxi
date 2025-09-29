@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Menu, X, Phone, Mail, Car } from 'lucide-react';
+import { Menu, X, Phone, Mail } from 'lucide-react';
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -13,34 +13,16 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="bg-white shadow-lg fixed top-0 left-0 right-0 z-50">
-      <div className="container mx-auto px-4">
-        {/* Top Bar */}
-        <div className="hidden md:flex items-center justify-between py-2 text-sm border-b border-gray-200">
-          <div className="flex items-center space-x-6">
-            <div className="flex items-center space-x-2">
-              <Phone className="w-4 h-4 text-blue-600" />
-              <span className="text-gray-600">+91 9087520500</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Mail className="w-4 h-4 text-blue-600" />
-              <span className="text-gray-600">happyridedroptaxi@gmail.com</span>
-            </div>
-          </div>
-          <div className="text-gray-600">
-            24/7 Service Available
-          </div>
-        </div>
-
-        {/* Main Header */}
-        <div className="flex items-center justify-between py-4">
-          <div className="flex items-center space-x-3">
-            <div className="bg-blue-600 text-white p-2 rounded-lg">
-              <Car className="w-8 h-8" />
+    <header className="bg-white/95 backdrop-blur-md fixed top-0 left-0 right-0 z-50 shadow-lg">
+      <div className="container mx-auto px-4 py-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <div className="bg-gradient-to-r from-blue-600 to-emerald-500 text-white p-2 rounded-lg">
+              <Phone className="w-6 h-6" />
             </div>
             <div>
               <h1 className="text-2xl font-bold text-gray-800">Happy Ride Drop</h1>
-              <p className="text-sm text-gray-600">Premium Taxi Service</p>
+              <p className="text-sm text-gray-600">Taxi Service</p>
             </div>
           </div>
 
@@ -48,44 +30,46 @@ const Header: React.FC = () => {
           <nav className="hidden md:flex items-center space-x-8">
             <button 
               onClick={() => scrollToSection('home')}
-              className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
+              className="text-gray-700 hover:text-blue-600 transition-colors"
             >
               Home
             </button>
             <button 
+              onClick={() => scrollToSection('booking')}
+              className="text-gray-700 hover:text-blue-600 transition-colors"
+            >
+              Book Now
+            </button>
+            <button 
               onClick={() => scrollToSection('services')}
-              className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
+              className="text-gray-700 hover:text-blue-600 transition-colors"
             >
               Services
             </button>
             <button 
               onClick={() => scrollToSection('pricing')}
-              className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
+              className="text-gray-700 hover:text-blue-600 transition-colors"
             >
               Pricing
             </button>
             <button 
-              onClick={() => scrollToSection('booking')}
-              className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
-            >
-              Book Now
-            </button>
-            <button 
               onClick={() => scrollToSection('contact')}
-              className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
+              className="text-gray-700 hover:text-blue-600 transition-colors"
             >
               Contact
             </button>
           </nav>
 
-          {/* CTA Button */}
-          <div className="hidden lg:block">
-            <a
-              href="tel:+919087520500"
-              className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-full font-semibold transition-colors"
-            >
-              Call Now
-            </a>
+          {/* Contact Info */}
+          <div className="hidden lg:flex items-center space-x-4">
+            <div className="flex items-center space-x-2 text-sm">
+              <Phone className="w-4 h-4 text-blue-600" />
+              <span className="text-gray-700">+91 9087520500</span>
+            </div>
+            <div className="flex items-center space-x-2 text-sm">
+              <Mail className="w-4 h-4 text-blue-600" />
+              <span className="text-gray-700">happyridedroptaxi@gmail.com</span>
+            </div>
           </div>
 
           {/* Mobile Menu Button */}
@@ -99,45 +83,48 @@ const Header: React.FC = () => {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <nav className="md:hidden py-4 border-t border-gray-200">
-            <div className="flex flex-col space-y-4">
+          <nav className="md:hidden mt-4 pb-4 border-t border-gray-200">
+            <div className="flex flex-col space-y-4 mt-4">
               <button 
                 onClick={() => scrollToSection('home')}
-                className="text-left text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                className="text-left text-gray-700 hover:text-blue-600 transition-colors"
               >
                 Home
               </button>
               <button 
+                onClick={() => scrollToSection('booking')}
+                className="text-left text-gray-700 hover:text-blue-600 transition-colors"
+              >
+                Book Now
+              </button>
+              <button 
                 onClick={() => scrollToSection('services')}
-                className="text-left text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                className="text-left text-gray-700 hover:text-blue-600 transition-colors"
               >
                 Services
               </button>
               <button 
                 onClick={() => scrollToSection('pricing')}
-                className="text-left text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                className="text-left text-gray-700 hover:text-blue-600 transition-colors"
               >
                 Pricing
               </button>
               <button 
-                onClick={() => scrollToSection('booking')}
-                className="text-left text-gray-700 hover:text-blue-600 font-medium transition-colors"
-              >
-                Book Now
-              </button>
-              <button 
                 onClick={() => scrollToSection('contact')}
-                className="text-left text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                className="text-left text-gray-700 hover:text-blue-600 transition-colors"
               >
                 Contact
               </button>
-              <a
-                href="tel:+919087520500"
-                className="inline-flex items-center text-red-600 font-semibold"
-              >
-                <Phone className="w-4 h-4 mr-2" />
-                +91 9087520500
-              </a>
+            </div>
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              <div className="flex items-center space-x-2 text-sm mb-2">
+                <Phone className="w-4 h-4 text-blue-600" />
+                <span className="text-gray-700">+91 9087520500</span>
+              </div>
+              <div className="flex items-center space-x-2 text-sm">
+                <Mail className="w-4 h-4 text-blue-600" />
+                <span className="text-gray-700">happyridedroptaxi@gmail.com</span>
+              </div>
             </div>
           </nav>
         )}

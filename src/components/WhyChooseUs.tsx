@@ -36,7 +36,7 @@ const WhyChooseUs: React.FC = () => {
   ];
 
   return (
-    <section id="services" className="py-20 bg-gray-50">
+    <section id="services" className="py-20 bg-white">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-gray-800 mb-4">Why Choose Happy Ride Drop?</h2>
@@ -52,10 +52,10 @@ const WhyChooseUs: React.FC = () => {
             return (
               <div 
                 key={index}
-                className="group p-8 rounded-xl bg-white hover:bg-blue-50 transition-all duration-300 hover:shadow-xl transform hover:-translate-y-2 border border-gray-200"
+                className="group p-8 rounded-xl bg-gradient-to-br from-gray-50 to-blue-50 hover:from-blue-50 hover:to-emerald-50 transition-all duration-300 hover:shadow-xl transform hover:-translate-y-2"
               >
                 <div className="mb-6">
-                  <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-emerald-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-emerald-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                     <IconComponent className="w-8 h-8 text-white" />
                   </div>
                 </div>
