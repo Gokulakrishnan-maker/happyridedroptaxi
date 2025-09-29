@@ -55,7 +55,7 @@ const WhyChooseUs: React.FC = () => {
                 className="group p-8 rounded-xl bg-white hover:bg-blue-50 transition-all duration-300 hover:shadow-xl transform hover:-translate-y-2 border border-gray-200"
               >
                 <div className="mb-6">
-                  <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-emerald-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                     <IconComponent className="w-8 h-8 text-white" />
                   </div>
                 </div>

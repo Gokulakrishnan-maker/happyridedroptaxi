@@ -315,7 +315,7 @@ const BookingForm: React.FC = () => {
                 className={`w-full py-4 px-6 rounded-lg font-semibold text-white transition-all duration-300 flex items-center justify-center ${
                   isLoading 
                     ? 'bg-gray-400 cursor-not-allowed' 
-                    : 'bg-blue-600 hover:bg-blue-700 hover:shadow-lg transform hover:scale-105'
+                    : 'bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-700 hover:to-emerald-700 hover:shadow-lg transform hover:scale-105'
                 }`}
               >
                 {isLoading ? (
