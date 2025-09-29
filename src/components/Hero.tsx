@@ -28,7 +28,7 @@ const Hero: React.FC = () => {
             <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight text-white drop-shadow-2xl">
               Happy Ride Drop
               <span className="block text-3xl md:text-4xl font-normal text-yellow-300 mt-2 drop-shadow-xl">
-                Premium Taxi Service
+                Taxi Services in Tamil Nadu, Kerala & Karnataka 
               </span>
             </h1>
             <p className="text-xl md:text-2xl mb-8 text-white leading-relaxed drop-shadow-lg">
