@@ -63,7 +63,7 @@ const TamilNaduDestinations: React.FC = () => {
     distance: '150 km from Chennai',
     duration: '3 hours',
     description: 'Famous pilgrimage city with the world-renowned Venkateswara Temple',
-    icon: Temple,
+    icon: Building,
     highlights: ['Tirupati Balaji Temple', 'Spiritual Experience', 'Pilgrimage', 'Cultural Sites']
     },
     {
