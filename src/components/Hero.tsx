@@ -15,10 +15,10 @@ const Hero: React.FC = () => {
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: 'url("/Screenshot 2025-09-29 134405.png")',
+          backgroundImage: 'url("https://images.pexels.com/photos/1128318/pexels-photo-1128318.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop")',
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-900/30 via-blue-800/20 to-emerald-800/25"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-900/70 via-blue-800/60 to-emerald-800/50"></div>
       </div>
 
       {/* Content */}
