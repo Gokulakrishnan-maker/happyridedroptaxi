@@ -4,22 +4,22 @@ import { MapPin, Camera, Clock, Star, Waves, Mountain, Building } from 'lucide-r
 const TamilNaduDestinations: React.FC = () => {
   const destinations = [
     {
-      name: 'Meenakshi Temple, Madurai',
-      image: 'https://images.pexels.com/photos/3573382/pexels-photo-3573382.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop',
-      category: 'Temple',
-      description: 'Ancient Dravidian architecture marvel with intricate sculptures',
-      distance: '460 km from Chennai',
-      duration: '7-8 hours',
-      highlights: ['Historic Temple', 'Architecture', 'Spiritual']
+      name: 'Madurai',
+      image: 'https://images.pexels.com/photos/1007025/pexels-photo-1007025.jpeg?auto=compress&cs=tinysrgb&w=400',
+      distance: '220 km',
+      duration: '4-5 hours',
+      description: 'Temple city with Meenakshi Amman Temple',
+      icon: Building,
+      highlights: ['Meenakshi Temple', 'Thirumalai Nayak Palace', 'Gandhi Museum', 'Local Markets']
     },
     {
-      name: 'Brihadeeswarar Temple, Thanjavur',
-      image: 'https://images.pexels.com/photos/9166266/pexels-photo-9166266.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop',
-      category: 'Temple',
-      description: 'UNESCO World Heritage Site and architectural masterpiece',
-      distance: '350 km from Chennai',
-      duration: '6-7 hours',
-      highlights: ['UNESCO Site', 'Chola Architecture', 'Heritage']
+      name: 'Thanjavur',
+     image: 'https://images.pexels.com/photos/9166266/pexels-photo-9166266.jpeg?auto=compress&cs=tinysrgb&w=400',
+     distance: '350 km from Chennai',
+     duration: '6-7 hours',
+     description: 'Historic city famous for the Brihadeeswarar Temple, Chola architecture, and rich cultural heritage',
+     icon: Temple,
+     highlights: ['Brihadeeswarar Temple', 'Chola Architecture', 'Art & Culture', 'UNESCO Heritage']
     },
     {
       name: 'Ooty Hill Station',
@@ -31,13 +31,13 @@ const TamilNaduDestinations: React.FC = () => {
       highlights: ['Tea Gardens', 'Cool Climate', 'Scenic Beauty']
     },
     {
-      name: 'Rameswaram Temple',
-      image: 'https://images.pexels.com/photos/8078361/pexels-photo-8078361.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop',
-      category: 'Temple',
-      description: 'Sacred pilgrimage site with longest temple corridor in India',
-      distance: '560 km from Chennai',
-      duration: '9-10 hours',
-      highlights: ['Pilgrimage', 'Sacred Waters', 'Island Temple']
+    name: 'Rameswaram',
+    image: 'https://images.pexels.com/photos/8078361/pexels-photo-8078361.jpeg?auto=compress&cs=tinysrgb&w=400',
+    distance: '560 km from Chennai',
+    duration: '9-10 hours',
+    description: 'Sacred island town with the famous Rameswaram Temple and pristine beaches',
+    icon: Temple,
+    highlights: ['Rameswaram Temple', 'Sacred Waters', 'Beach Views', 'Pilgrimage']
     },
     {
       name: 'Kanyakumari',
@@ -45,18 +45,17 @@ const TamilNaduDestinations: React.FC = () => {
       distance: '450 km',
       duration: '8-9 hours',
       description: 'Southernmost tip with Thiruvalluvar Statue',
-      fare: '₹7,500',
       icon: Waves,
       highlights: ['Thiruvalluvar Statue', 'Sunset Point', 'Vivekananda Rock', 'Beach']
     },
     {
-      name: 'Pondicherry',
-      image: 'https://images.pexels.com/photos/3573382/pexels-photo-3573382.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop',
-      category: 'City',
-      description: 'French colonial charm with beautiful beaches and cafes',
-      distance: '160 km from Chennai',
-      duration: '3-4 hours',
-      highlights: ['French Quarter', 'Beaches', 'Cafes']
+    name: 'Tirupati',
+    image: 'https://images.pexels.com/photos/9166266/pexels-photo-9166266.jpeg?auto=compress&cs=tinysrgb&w=400',
+    distance: '150 km from Chennai',
+    duration: '3 hours',
+    description: 'Famous pilgrimage city with the world-renowned Venkateswara Temple',
+    icon: Temple,
+    highlights: ['Tirupati Balaji Temple', 'Spiritual Experience', 'Pilgrimage', 'Cultural Sites']
     },
     {
       name: 'Kodaikanal',
@@ -64,7 +63,6 @@ const TamilNaduDestinations: React.FC = () => {
       distance: '180 km',
       duration: '4 hours',
       description: 'Princess of Hill Stations with pristine lakes',
-      fare: '₹3,500',
       icon: Mountain,
       highlights: ['Kodai Lake', 'Coakers Walk', 'Bryant Park', 'Pillar Rocks']
     },
@@ -78,13 +76,14 @@ const TamilNaduDestinations: React.FC = () => {
       highlights: ['Sacred Pilgrimage', 'Lord Venkateswara', 'Spiritual']
     },
     {
-      name: 'Coimbatore',
-      image: 'https://images.pexels.com/photos/3573382/pexels-photo-3573382.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop',
-      category: 'City',
-      description: 'Manchester of South India with textile industry and temples',
-      distance: '500 km from Chennai',
-      duration: '8-9 hours',
-      highlights: ['Industrial Hub', 'Temples', 'Gateway to Kerala']
+    name: 'Coimbatore',
+    image: 'https://images.pexels.com/photos/3573382/pexels-photo-3573382.jpeg?auto=compress&cs=tinysrgb&w=400',
+    distance: '500 km from Chennai',
+    duration: '8-9 hours',
+    description: 'Industrial city known as Manchester of South India with temples and textile industry',
+    icon: Building,
+    highlights: ['Textile Industry', 'Marudamalai Temple', 'Industrial Hub', 'Gateway to Kerala']
+  },
     },
     {
     name: 'Trichy',
@@ -92,11 +91,28 @@ const TamilNaduDestinations: React.FC = () => {
     distance: '320 km from Chennai',
     duration: '5-6 hours',
     description: 'Historic city with Rock Fort and bustling markets',
-    fare: '₹4,500',
     icon: Building,
     highlights: ['Rock Fort', 'Market Streets', 'Temples', 'Cultural Sites']
-   }
-  ];
+   },
+        { 
+      name: 'Mysore',
+      image: 'https://images.pexels.com/photos/1007025/pexels-photo-1007025.jpeg?auto=compress&cs=tinysrgb&w=400',
+      distance: '280 km',
+      duration: '5-6 hours',
+      description: 'City of Palaces with rich heritage',
+      icon: Building,
+      highlights: ['Mysore Palace', 'Chamundi Hills', 'Brindavan Gardens', 'Silk Sarees']
+    },
+       {
+    name: 'Pondicherry',
+    image: 'https://images.pexels.com/photos/3573382/pexels-photo-3573382.jpeg?auto=compress&cs=tinysrgb&w=400',
+    distance: '160 km from Chennai',
+    duration: '3-4 hours',
+    description: 'French colonial charm with beaches, cafes, and serene coastal vibe',
+    icon: Beach,
+    highlights: ['French Quarter', 'Beaches', 'Cafes', 'Serene Walks']
+    }                     
+   ];
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
