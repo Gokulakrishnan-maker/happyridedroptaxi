@@ -1,5 +1,6 @@
 import React from 'react';
 import { Check, Car } from 'lucide-react';
+import sedanImage from '../assets/sedan.png';
 
 const Pricing: React.FC = () => {
   const pricingPlans = [
