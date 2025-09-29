@@ -4,9 +4,9 @@ import { Check, Car } from 'lucide-react';
 const Pricing: React.FC = () => {
   const pricingPlans = [
     {
-      name: 'Sedan',
-      icon: '🚗',
-      price: '₹12/km',
+      name: 'Sedan (Swift Dzire)',
+      image: '/assets/swift-dzire.png',
+      price: '₹13/km',
       description: 'Comfortable and affordable',
       features: [
         'AC Vehicle',
@@ -20,8 +20,8 @@ const Pricing: React.FC = () => {
     },
     {
       name: 'SUV',
-      icon: '🚙',
-      price: '₹15/km',
+      image: '/assets/suv.png',
+      price: '₹18/km',
       description: 'Spacious and premium',
       features: [
         'AC Vehicle',
@@ -36,8 +36,8 @@ const Pricing: React.FC = () => {
     },
     {
       name: 'Innova',
-      icon: '🚐',
-      price: '₹18/km',
+      image: '/assets/innova.png',
+      price: '₹19/km',
       description: 'Luxury and comfort',
       features: [
         'AC Vehicle',
