@@ -6,8 +6,8 @@ const TamilNaduDestinations: React.FC = () => {
     {
       name: 'Madurai',
       image: 'https://images.pexels.com/photos/1007025/pexels-photo-1007025.jpeg?auto=compress&cs=tinysrgb&w=400',
-      distance: '220 km',
-      duration: '4-5 hours',
+      distance: '460 km from Chennai',
+      duration: '7-8 hours',
       description: 'Temple city with Meenakshi Amman Temple',
       icon: Building,
       highlights: ['Meenakshi Temple', 'Thirumalai Nayak Palace', 'Gandhi Museum', 'Local Markets']
@@ -42,11 +42,20 @@ const TamilNaduDestinations: React.FC = () => {
     {
       name: 'Kanyakumari',
       image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSVYkyFjgbLCZ9CbI90sWef31in22ymqHp-KQ&s',
-      distance: '450 km',
-      duration: '8-9 hours',
+      distance: '700 km from Chennai',
+      duration: '12 hours',
       description: 'Southernmost tip with Thiruvalluvar Statue',
       icon: Waves,
       highlights: ['Thiruvalluvar Statue', 'Sunset Point', 'Vivekananda Rock', 'Beach']
+    },
+     {
+      name: 'Kodaikanal',
+      image: 'https://images.pexels.com/photos/1450360/pexels-photo-1450360.jpeg?auto=compress&cs=tinysrgb&w=400',
+      distance: '520 km from Chennai',
+      duration: '8-9 hours',
+      description: 'Princess of Hill Stations with pristine lakes',
+      icon: Mountain,
+      highlights: ['Kodai Lake', 'Coakers Walk', 'Bryant Park', 'Pillar Rocks']
     },
     {
     name: 'Tirupati',
@@ -54,26 +63,8 @@ const TamilNaduDestinations: React.FC = () => {
     distance: '150 km from Chennai',
     duration: '3 hours',
     description: 'Famous pilgrimage city with the world-renowned Venkateswara Temple',
-    icon: Building,
+    icon: Temple,
     highlights: ['Tirupati Balaji Temple', 'Spiritual Experience', 'Pilgrimage', 'Cultural Sites']
-    },
-    {
-      name: 'Kodaikanal',
-      image: 'https://images.pexels.com/photos/1450360/pexels-photo-1450360.jpeg?auto=compress&cs=tinysrgb&w=400',
-      distance: '180 km',
-      duration: '4 hours',
-      description: 'Princess of Hill Stations with pristine lakes',
-      icon: Mountain,
-      highlights: ['Kodai Lake', 'Coakers Walk', 'Bryant Park', 'Pillar Rocks']
-    },
-    {
-      name: 'Tirupati Balaji Temple',
-      image: 'https://images.pexels.com/photos/9166266/pexels-photo-9166266.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop',
-      category: 'Temple',
-      description: 'Most visited Hindu temple in the world',
-      distance: '150 km from Chennai',
-      duration: '3 hours',
-      highlights: ['Sacred Pilgrimage', 'Lord Venkateswara', 'Spiritual']
     },
     {
     name: 'Coimbatore',
@@ -97,8 +88,8 @@ const TamilNaduDestinations: React.FC = () => {
         { 
       name: 'Mysore',
       image: 'https://images.pexels.com/photos/1007025/pexels-photo-1007025.jpeg?auto=compress&cs=tinysrgb&w=400',
-      distance: '280 km',
-      duration: '5-6 hours',
+      distance: '500 km from Chennai',
+      duration: '8-9 hours',
       description: 'City of Palaces with rich heritage',
       icon: Building,
       highlights: ['Mysore Palace', 'Chamundi Hills', 'Brindavan Gardens', 'Silk Sarees']
