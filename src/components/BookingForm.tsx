@@ -4,7 +4,7 @@ import { MapPin, Calendar, Clock, Car, User, Phone, Send, AlertCircle, Navigatio
 import { BookingFormData, ValidationError, BookingResponse } from '../types/booking';
 import LocationInput from './LocationInput';
 import { useDistanceCalculation } from '../hooks/useDistanceCalculation';
-import AnalogTimePicker from './AnalogTimePicker';
+import AnalogClock from './AnalogClock';
 
 const BookingForm: React.FC = () => {
   const [formData, setFormData] = useState<BookingFormData>({
@@ -25,7 +25,7 @@ const BookingForm: React.FC = () => {
   const [dropCoords, setDropCoords] = useState<{lat: number; lng: number} | null>(null);
   const [calculatedDistance, setCalculatedDistance] = useState<number | null>(null);
   const [estimatedDuration, setEstimatedDuration] = useState<string>('');
-  const [showTimePicker, setShowTimePicker] = useState(false);
+  const [showClock, setShowClock] = useState(false);
 
   const { calculateDistance, calculateHaversineDistance, isCalculating } = useDistanceCalculation();
 
@@ -383,7 +383,7 @@ const BookingForm: React.FC = () => {
                   </label>
                   <button
                     type="button"
-                    onClick={() => setShowTimePicker(true)}
+                    onClick={() => setShowClock(true)}
                     className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors text-left ${
                       getFieldError('time') ? 'border-red-500' : 'border-gray-300'
                     } bg-white`}
@@ -443,12 +443,12 @@ const BookingForm: React.FC = () => {
             </form>
           </div>
 
-          {/* Analog Time Picker Modal */}
-          {showTimePicker && (
-            <AnalogTimePicker
+          {/* Analog Clock Modal */}
+          {showClock && (
+            <AnalogClock
               value={formData.time}
               onChange={(time) => handleInputChange('time', time)}
-              onClose={() => setShowTimePicker(false)}
+              onClose={() => setShowClock(false)}
             />
           )}
         </div>
