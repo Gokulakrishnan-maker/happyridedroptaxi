@@ -118,14 +118,7 @@ const AnalogClock: React.FC<AnalogClockProps> = ({
   };
 
   const handleTimeSelect = () => {
-    let hour = selectedHour;
-    if (!isAM && hour !== 12) {
-      hour += 12;
-    } else if (isAM && hour === 12) {
-      hour = 0;
-    }
-
-    const timeString = `${hour.toString().padStart(2, "0")}:${selectedMinute
+    const timeString = `${selectedHour.toString().padStart(2, "0")}:${selectedMinute
       .toString()
       .padStart(2, "0")} ${isAM ? "AM" : "PM"}`;
     onChange(timeString);
