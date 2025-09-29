@@ -15,17 +15,10 @@ const Hero: React.FC = () => {
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: 'url("https://images.pexels.com/photos/116675/pexels-photo-116675.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop")',
+          backgroundImage: 'url("/Screenshot 2025-09-29 134405.png")',
         }}
       >
-        {/* Family overlay image */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-30"
-          style={{
-            backgroundImage: 'url("https://images.pexels.com/photos/1128318/pexels-photo-1128318.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop")',
-          }}
-        ></div>
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-900/85 via-blue-800/75 to-emerald-800/65"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-900/70 via-blue-800/60 to-emerald-800/50"></div>
       </div>
 
       {/* Content */}
