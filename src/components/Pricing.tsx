@@ -101,8 +101,8 @@ const Pricing: React.FC = () => {
                 <img
                   src={plan.image}
                   alt={plan.name}
-                  className="w-32 h-32 mx-auto mb-4 object-contain transform transition-transform duration-300 hover:scale-105"
-                />
+                  className="w-48 h-48 mx-auto mb-4 object-contain transform transition-transform duration-300 hover:scale-105"
+                 />   
                 <h3 className="text-2xl font-bold text-gray-800 mb-2">{plan.name}</h3>
                 <p className="text-gray-600 mb-4">{plan.description}</p>
                 <div className="text-4xl font-bold text-blue-600 mb-2">{plan.price}</div>
