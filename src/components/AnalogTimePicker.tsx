@@ -90,7 +90,7 @@ const AnalogTimePicker: React.FC<AnalogTimePickerProps> = ({
       return (
         <div
           key={num}
-          className="absolute transform -translate-x-1/2 -translate-y-1/2 text-gray-700"
+          className="absolute transform -translate-x-1/2 -translate-y-1/2 text-gray-700 font-medium"
           style={{ left: `calc(50% + ${x}px)`, top: `calc(50% + ${y}px)` }}
         >
           {num}
