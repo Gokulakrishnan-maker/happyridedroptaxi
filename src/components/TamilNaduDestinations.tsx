@@ -18,7 +18,7 @@ const TamilNaduDestinations: React.FC = () => {
      distance: '350 km from Chennai',
      duration: '6-7 hours',
      description: 'Historic city famous for the Brihadeeswarar Temple, Chola architecture, and rich cultural heritage',
-     icon: Temple,
+     icon: Building,
      highlights: ['Brihadeeswarar Temple', 'Chola Architecture', 'Art & Culture', 'UNESCO Heritage']
     },
     {
@@ -36,7 +36,7 @@ const TamilNaduDestinations: React.FC = () => {
     distance: '560 km from Chennai',
     duration: '9-10 hours',
     description: 'Sacred island town with the famous Rameswaram Temple and pristine beaches',
-    icon: Temple,
+    icon: Building,
     highlights: ['Rameswaram Temple', 'Sacred Waters', 'Beach Views', 'Pilgrimage']
     },
     {
@@ -54,7 +54,7 @@ const TamilNaduDestinations: React.FC = () => {
     distance: '150 km from Chennai',
     duration: '3 hours',
     description: 'Famous pilgrimage city with the world-renowned Venkateswara Temple',
-    icon: Temple,
+    icon: Building,
     highlights: ['Tirupati Balaji Temple', 'Spiritual Experience', 'Pilgrimage', 'Cultural Sites']
     },
     {
@@ -109,7 +109,7 @@ const TamilNaduDestinations: React.FC = () => {
     distance: '160 km from Chennai',
     duration: '3-4 hours',
     description: 'French colonial charm with beaches, cafes, and serene coastal vibe',
-    icon: Beach,
+    icon: Waves,
     highlights: ['French Quarter', 'Beaches', 'Cafes', 'Serene Walks']
     }                     
    ];
