@@ -1,59 +1,58 @@
 import React from 'react';
 import { Check, Car } from 'lucide-react';
-import sedanImage from '../assets/sedan.png';
+
+const pricingPlans = [
+  {
+    name: 'Sedan',
+    image: 'https://happyridedroptaxi.com/assets/sedan.png',
+    price: '₹14/km',
+    description: 'Comfortable and affordable',
+    features: [
+      'AC Vehicle',
+      'Professional Driver',
+      '4 Passengers',
+      'Luggage Space',
+      'GPS Tracking',
+      'Customer Support',
+    ],
+    popular: false,
+  },
+  {
+    name: 'SUV',
+    image: '/assets/suv.png', // Put this in public/assets
+    price: '₹19/km',
+    description: 'Spacious and premium',
+    features: [
+      'AC Vehicle',
+      'Professional Driver',
+      '6-7 Passengers',
+      'Extra Luggage Space',
+      'GPS Tracking',
+      'Premium Comfort',
+      'Customer Support',
+    ],
+    popular: true,
+  },
+  {
+    name: 'Innova',
+    image: '/assets/innova.png', // Put this in public/assets
+    price: '₹20/km',
+    description: 'Luxury and comfort',
+    features: [
+      'AC Vehicle',
+      'Professional Driver',
+      '6-7 Passengers',
+      'Maximum Comfort',
+      'GPS Tracking',
+      'Premium Interior',
+      'Complimentary Water',
+      'Customer Support',
+    ],
+    popular: false,
+  },
+];
 
 const Pricing: React.FC = () => {
-  const pricingPlans = [
-    {
-      name: 'Sedan',
-      image: 'https://happyridedroptaxi.com/assets/sedan.png',
-      price: '₹14/km',
-      description: 'Comfortable and affordable',
-      features: [
-        'AC Vehicle',
-        'Professional Driver',
-        '4 Passengers',
-        'Luggage Space',
-        'GPS Tracking',
-        'Customer Support',
-      ],
-      popular: false,
-    },
-    {
-      name: 'SUV',
-      image: '/assets/suv.png',
-      price: '₹19/km',
-      description: 'Spacious and premium',
-      features: [
-        'AC Vehicle',
-        'Professional Driver',
-        '6-7 Passengers',
-        'Extra Luggage Space',
-        'GPS Tracking',
-        'Premium Comfort',
-        'Customer Support',
-      ],
-      popular: true,
-    },
-    {
-      name: 'Innova',
-      image: '/assets/innova.png',
-      price: '₹20/km',
-      description: 'Luxury and comfort',
-      features: [
-        'AC Vehicle',
-        'Professional Driver',
-        '6-7 Passengers',
-        'Maximum Comfort',
-        'GPS Tracking',
-        'Premium Interior',
-        'Complimentary Water',
-        'Customer Support',
-      ],
-      popular: false,
-    },
-  ];
-
   return (
     <section id="pricing" className="py-20 bg-white">
       <div className="container mx-auto px-4">
@@ -84,7 +83,11 @@ const Pricing: React.FC = () => {
               )}
 
               <div className="text-center mb-8">
-                <div className="text-4xl mb-4">{plan.icon}</div>
+                <img
+                  src={plan.image}
+                  alt={plan.name}
+                  className="w-32 h-32 mx-auto mb-4 object-contain transform transition-transform duration-300 hover:scale-105"
+                />
                 <h3 className="text-2xl font-bold text-gray-800 mb-2">{plan.name}</h3>
                 <p className="text-gray-600 mb-4">{plan.description}</p>
                 <div className="text-4xl font-bold text-blue-600 mb-2">{plan.price}</div>
