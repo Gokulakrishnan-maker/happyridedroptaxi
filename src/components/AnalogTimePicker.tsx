@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Clock, X } from 'lucide-react';
 
 interface AnalogTimePickerProps {
   value: string;
