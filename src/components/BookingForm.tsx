@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { MapPin, Calendar, Clock, Car, User, Phone, Send, AlertCircle } from 'lucide-react';
 import { BookingFormData, ValidationError, BookingResponse } from '../types/booking';
+import LocationInput from './LocationInput';
 
 const BookingForm: React.FC = () => {
   const [formData, setFormData] = useState<BookingFormData>({
@@ -70,7 +71,7 @@ const BookingForm: React.FC = () => {
     setSubmitMessage('');
 
     try {
-      const response = await fetch('/api/book', {
+      const response = await fetch('http://localhost:3001/api/book', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -93,11 +94,18 @@ const BookingForm: React.FC = () => {
           name: '',
           phone: '',
         });
+        setErrors([]);
       } else {
-        setSubmitMessage(result.message || 'Failed to submit booking. Please try again.');
+        if (result.errors && Array.isArray(result.errors)) {
+          setErrors(result.errors);
+          setSubmitMessage('Please fix the errors and try again.');
+        } else {
+          setSubmitMessage(result.message || 'Failed to submit booking. Please try again.');
+        }
       }
     } catch (error) {
-      setSubmitMessage('Network error. Please check your connection and try again.');
+      console.error('Booking error:', error);
+      setSubmitMessage('Unable to connect to server. Please try again or call us directly.');
     } finally {
       setIsLoading(false);
     }
@@ -126,50 +134,34 @@ const BookingForm: React.FC = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid md:grid-cols-2 gap-6">
                 {/* Pickup Location */}
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    <MapPin className="inline w-4 h-4 mr-2 text-blue-600" />
-                    Pickup Location
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.pickupLocation}
-                    onChange={(e) => handleInputChange('pickupLocation', e.target.value)}
-                    className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
-                      getFieldError('pickupLocation') ? 'border-red-300' : 'border-gray-300'
-                    }`}
-                    placeholder="Enter pickup location"
-                  />
-                  {getFieldError('pickupLocation') && (
-                    <p className="text-red-500 text-sm mt-1 flex items-center">
-                      <AlertCircle className="w-4 h-4 mr-1" />
-                      {getFieldError('pickupLocation')}
-                    </p>
-                  )}
-                </div>
+                <LocationInput
+                  label="Pickup Location"
+                  value={formData.pickupLocation}
+                  onChange={(value, coordinates) => {
+                    handleInputChange('pickupLocation', value);
+                    if (coordinates) {
+                      setFormData(prev => ({ ...prev, pickupCoordinates: coordinates }));
+                    }
+                  }}
+                  placeholder="Enter pickup location"
+                  error={getFieldError('pickupLocation')}
+                  icon={<MapPin className="inline w-4 h-4 mr-2 text-blue-600" />}
+                />
 
                 {/* Drop Location */}
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    <MapPin className="inline w-4 h-4 mr-2 text-red-600" />
-                    Drop Location
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.dropLocation}
-                    onChange={(e) => handleInputChange('dropLocation', e.target.value)}
-                    className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
-                      getFieldError('dropLocation') ? 'border-red-300' : 'border-gray-300'
-                    }`}
-                    placeholder="Enter drop location"
-                  />
-                  {getFieldError('dropLocation') && (
-                    <p className="text-red-500 text-sm mt-1 flex items-center">
-                      <AlertCircle className="w-4 h-4 mr-1" />
-                      {getFieldError('dropLocation')}
-                    </p>
-                  )}
-                </div>
+                <LocationInput
+                  label="Drop Location"
+                  value={formData.dropLocation}
+                  onChange={(value, coordinates) => {
+                    handleInputChange('dropLocation', value);
+                    if (coordinates) {
+                      setFormData(prev => ({ ...prev, dropCoordinates: coordinates }));
+                    }
+                  }}
+                  placeholder="Enter drop location"
+                  error={getFieldError('dropLocation')}
+                  icon={<MapPin className="inline w-4 h-4 mr-2 text-red-600" />}
+                />
 
                 {/* Trip Type */}
                 <div>

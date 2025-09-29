@@ -23,7 +23,7 @@ const Hero: React.FC = () => {
 
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 py-20">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="max-w-4xl mx-auto text-center">
           {/* Left Content */}
           <div className="text-white">
             <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight drop-shadow-2xl">
@@ -67,20 +67,6 @@ const Hero: React.FC = () => {
               <div className="flex items-center space-x-2 text-sm bg-black/20 backdrop-blur-sm px-3 py-2 rounded-lg border border-white/10">
                 <Phone className="w-4 h-4 text-yellow-400" />
                 <span className="drop-shadow-md">+91 9087520500</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Right Content - Car Image */}
-          <div className="hidden lg:block">
-            <div className="relative">
-              <img
-                src="https://images.pexels.com/photos/116675/pexels-photo-116675.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop"
-                alt="Taxi Car"
-                className="w-full h-auto rounded-lg shadow-2xl"
-              />
-              <div className="absolute -bottom-4 -right-4 bg-yellow-400 text-black px-6 py-3 rounded-lg font-bold text-lg shadow-lg">
-                Starting ₹12/km
               </div>
             </div>
           </div>
