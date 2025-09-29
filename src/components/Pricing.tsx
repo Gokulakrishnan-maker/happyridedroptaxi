@@ -17,9 +17,24 @@ const pricingPlans = [
     ],
     popular: false,
   },
+   {
+    name: 'Etios',
+    image: 'https://happyridedroptaxi.com/assets/etios.png', 
+    price: '₹15/km',
+    description: 'Reliable and efficient',
+    features: [
+      'AC Vehicle',
+      'Professional Driver',
+      '4 Passengers',
+      'Luggage Space',
+      'GPS Tracking',
+      'Customer Support',
+    ],
+    popular: false,
+  },
   {
     name: 'SUV',
-    image: '/assets/suv.png', // Put this in public/assets
+    image: 'https://happyridedroptaxi.com/assets/suv.png', // Put this in public/assets
     price: '₹19/km',
     description: 'Spacious and premium',
     features: [
@@ -35,7 +50,7 @@ const pricingPlans = [
   },
   {
     name: 'Innova',
-    image: '/assets/innova.png', // Put this in public/assets
+    image: 'https://happyridedroptaxi.com/assets/innova.png', // Put this in public/assets
     price: '₹20/km',
     description: 'Luxury and comfort',
     features: [
