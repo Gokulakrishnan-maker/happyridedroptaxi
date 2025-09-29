@@ -65,6 +65,23 @@ const pricingPlans = [
     ],
     popular: false,
   },
+    {
+    name: 'Innova Crysta',
+    image: 'https://happyridedroptaxi.com//assets/innova-crysta.png',
+    price: '₹24/km',
+    description: 'Premium comfort and space',
+    features: [
+      'AC Vehicle',
+      'Professional Driver',
+      '6-7 Passengers',
+      'Maximum Comfort',
+      'GPS Tracking',
+      'Premium Interior',
+      'Complimentary Water',
+      'Customer Support',
+    ],
+    popular: false,
+  },
 ];
 
 const Pricing: React.FC = () => {
