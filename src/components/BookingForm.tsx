@@ -27,6 +27,135 @@ const BookingForm: React.FC = () => {
 
   const { calculateDistance, calculateHaversineDistance, isCalculating } = useDistanceCalculation();
 
+  const validateForm = (): ValidationError[] => {
+    const newErrors: ValidationError[] = [];
+
+    if (!formData.pickupLocation.trim()) {
+      newErrors.push({ field: 'pickupLocation', message: 'Pickup location is required' });
+    }
+
+    if (!formData.dropLocation.trim()) {
+      newErrors.push({ field: 'dropLocation', message: 'Drop location is required' });
+    }
+
+    if (!formData.date) {
+      newErrors.push({ field: 'date', message: 'Date is required' });
+    }
+
+    if (!formData.time) {
+      newErrors.push({ field: 'time', message: 'Time is required' });
+    }
+
+    if (!formData.name.trim()) {
+      newErrors.push({ field: 'name', message: 'Name is required' });
+    }
+
+    if (!formData.phone.trim()) {
+      newErrors.push({ field: 'phone', message: 'Phone number is required' });
+    } else if (!/^\d{10}$/.test(formData.phone.replace(/\D/g, ''))) {
+      newErrors.push({ field: 'phone', message: 'Please enter a valid 10-digit phone number' });
+    }
+
+    // Distance validation
+    if (calculatedDistance) {
+      const minDistance = formData.tripType === 'one-way' ? 130 : 250;
+      if (calculatedDistance < minDistance) {
+        newErrors.push({ 
+          field: 'distance', 
+          message: `Minimum distance for ${formData.tripType} trips is ${minDistance} km. Current distance: ${calculatedDistance} km` 
+        });
+      }
+    }
+
+    return newErrors;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const validationErrors = validateForm();
+    setErrors(validationErrors);
+    
+    if (validationErrors.length > 0) {
+      return;
+    }
+
+    setIsLoading(true);
+    setSubmitMessage('');
+
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      setSubmitMessage('Booking submitted successfully! We will contact you shortly.');
+      
+      // Reset form
+      setFormData({
+        pickupLocation: '',
+        dropLocation: '',
+        tripType: 'one-way',
+        date: '',
+        time: '',
+        carType: 'sedan',
+        name: '',
+        phone: '',
+      });
+      setPickupCoords(null);
+      setDropCoords(null);
+      setCalculatedDistance(null);
+      setEstimatedDuration('');
+      
+    } catch (error) {
+      setSubmitMessage('Failed to submit booking. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleInputChange = (field: keyof BookingFormData, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+    
+    // Clear field-specific errors
+    setErrors(prev => prev.filter(error => error.field !== field));
+  };
+
+  const handleLocationChange = async (field: 'pickupLocation' | 'dropLocation', value: string, coords?: {lat: number; lng: number}) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+    
+    if (field === 'pickupLocation') {
+      setPickupCoords(coords || null);
+    } else {
+      setDropCoords(coords || null);
+    }
+    
+    // Clear field-specific errors
+    setErrors(prev => prev.filter(error => error.field !== field));
+    
+    // Calculate distance if both locations have coordinates
+    if (pickupCoords && dropCoords) {
+      try {
+        const distance = await calculateDistance(pickupCoords, dropCoords);
+        if (distance) {
+          setCalculatedDistance(distance.distance);
+          setEstimatedDuration(distance.duration);
+        }
+      } catch (error) {
+        console.error('Error calculating distance:', error);
+      }
+    }
+  };
+
+  const getFieldError = (fieldName: string): string | undefined => {
+    const error = errors.find(err => err.field === fieldName);
+    return error?.message;
+  };
+
   // Updated car types with actual images
   const carTypes = [
     { value: 'sedan', label: 'Sedan', description: 'Comfortable for 4 passengers', image: '/cars/sedan.png' },
@@ -157,6 +286,87 @@ const BookingForm: React.FC = () => {
                 </div>
 
                 {/* Date, Time, Name, Phone ... keep your current inputs */}
+                
+                {/* Date */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    <Calendar className="inline w-4 h-4 mr-2" />
+                    Date
+                  </label>
+                  <input
+                    type="date"
+                    value={formData.date}
+                    onChange={(e) => handleInputChange('date', e.target.value)}
+                    min={new Date().toISOString().split('T')[0]}
+                    className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
+                      getFieldError('date') ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                  />
+                  {getFieldError('date') && (
+                    <p className="text-red-500 text-sm mt-1">{getFieldError('date')}</p>
+                  )}
+                </div>
+
+                {/* Time */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    <Clock className="inline w-4 h-4 mr-2" />
+                    Time
+                  </label>
+                  <input
+                    type="time"
+                    value={formData.time}
+                    onChange={(e) => handleInputChange('time', e.target.value)}
+                    className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
+                      getFieldError('time') ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                  />
+                  {getFieldError('time') && (
+                    <p className="text-red-500 text-sm mt-1">{getFieldError('time')}</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                {/* Name */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    <User className="inline w-4 h-4 mr-2" />
+                    Full Name
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => handleInputChange('name', e.target.value)}
+                    placeholder="Enter your full name"
+                    className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
+                      getFieldError('name') ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                  />
+                  {getFieldError('name') && (
+                    <p className="text-red-500 text-sm mt-1">{getFieldError('name')}</p>
+                  )}
+                </div>
+
+                {/* Phone */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    <Phone className="inline w-4 h-4 mr-2" />
+                    Phone Number
+                  </label>
+                  <input
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) => handleInputChange('phone', e.target.value)}
+                    placeholder="Enter your phone number"
+                    className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
+                      getFieldError('phone') ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                  />
+                  {getFieldError('phone') && (
+                    <p className="text-red-500 text-sm mt-1">{getFieldError('phone')}</p>
+                  )}
+                </div>
 
               </div>
 
