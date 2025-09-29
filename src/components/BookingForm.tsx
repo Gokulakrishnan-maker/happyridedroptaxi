@@ -418,6 +418,7 @@ const BookingForm: React.FC = () => {
                   </>
                 )}
               </button>
+            </div>
             </form>
           </div>
 
