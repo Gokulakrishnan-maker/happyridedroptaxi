@@ -1,5 +1,5 @@
 import React from 'react';
-import { Check, Car } from 'lucide-react';
+import { Check, Car, IndianRupee, ArrowRight, RotateCcw } from 'lucide-react';
 
 const pricingPlans = [
   {
@@ -159,7 +159,101 @@ const Pricing: React.FC = () => {
         <div className="text-center mt-16">
           <div className="bg-gradient-to-r from-blue-50 to-emerald-50 rounded-xl p-8 max-w-4xl mx-auto">
             <Car className="w-12 h-12 text-blue-600 mx-auto mb-4" />
-            <h3 className="text-2xl font-bold text-gray-800 mb-4">Additional Information</h3>
+            <h3 className="text-2xl font-bold text-gray-800 mb-4">Tariff Details</h3>
+            
+            {/* One Way Tariff */}
+            <div className="mb-8">
+              <div className="flex items-center justify-center mb-4">
+                <ArrowRight className="w-6 h-6 text-blue-600 mr-2" />
+                <h4 className="text-xl font-bold text-gray-800">One Way Tariff</h4>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full bg-white rounded-lg shadow-sm border border-gray-200">
+                  <thead className="bg-gradient-to-r from-blue-600 to-emerald-600 text-white">
+                    <tr>
+                      <th className="px-4 py-3 text-left font-semibold">Vehicle Type</th>
+                      <th className="px-4 py-3 text-left font-semibold">Rate/KM</th>
+                      <th className="px-4 py-3 text-left font-semibold">Driver Bata</th>
+                      <th className="px-4 py-3 text-left font-semibold">Additional Charge</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-gray-700">
+                    <tr className="border-b border-gray-100 hover:bg-gray-50">
+                      <td className="px-4 py-3 font-semibold">SEDAN</td>
+                      <td className="px-4 py-3">₹14/KM</td>
+                      <td className="px-4 py-3">₹400</td>
+                      <td className="px-4 py-3">One way Toll</td>
+                    </tr>
+                    <tr className="border-b border-gray-100 hover:bg-gray-50">
+                      <td className="px-4 py-3 font-semibold">ETIOS</td>
+                      <td className="px-4 py-3">₹14/KM</td>
+                      <td className="px-4 py-3">₹400</td>
+                      <td className="px-4 py-3">One way Toll</td>
+                    </tr>
+                    <tr className="border-b border-gray-100 hover:bg-gray-50">
+                      <td className="px-4 py-3 font-semibold">SUV</td>
+                      <td className="px-4 py-3">₹19/KM</td>
+                      <td className="px-4 py-3">₹400</td>
+                      <td className="px-4 py-3">One way Toll</td>
+                    </tr>
+                    <tr className="hover:bg-gray-50">
+                      <td className="px-4 py-3 font-semibold">INNOVA</td>
+                      <td className="px-4 py-3">₹20/KM</td>
+                      <td className="px-4 py-3">₹400</td>
+                      <td className="px-4 py-3">One way Toll</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Round Trip Tariff */}
+            <div className="mb-6">
+              <div className="flex items-center justify-center mb-4">
+                <RotateCcw className="w-6 h-6 text-emerald-600 mr-2" />
+                <h4 className="text-xl font-bold text-gray-800">Round Trip Tariff</h4>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full bg-white rounded-lg shadow-sm border border-gray-200">
+                  <thead className="bg-gradient-to-r from-emerald-600 to-blue-600 text-white">
+                    <tr>
+                      <th className="px-4 py-3 text-left font-semibold">Vehicle Type</th>
+                      <th className="px-4 py-3 text-left font-semibold">Rate/KM</th>
+                      <th className="px-4 py-3 text-left font-semibold">Driver Bata</th>
+                      <th className="px-4 py-3 text-left font-semibold">Additional Charge</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-gray-700">
+                    <tr className="border-b border-gray-100 hover:bg-gray-50">
+                      <td className="px-4 py-3 font-semibold">SEDAN</td>
+                      <td className="px-4 py-3">₹13/KM</td>
+                      <td className="px-4 py-3">₹400</td>
+                      <td className="px-4 py-3">Up & Down Toll</td>
+                    </tr>
+                    <tr className="border-b border-gray-100 hover:bg-gray-50">
+                      <td className="px-4 py-3 font-semibold">ETIOS</td>
+                      <td className="px-4 py-3">₹13/KM</td>
+                      <td className="px-4 py-3">₹400</td>
+                      <td className="px-4 py-3">Up & Down Toll</td>
+                    </tr>
+                    <tr className="border-b border-gray-100 hover:bg-gray-50">
+                      <td className="px-4 py-3 font-semibold">SUV</td>
+                      <td className="px-4 py-3">₹18/KM</td>
+                      <td className="px-4 py-3">₹400</td>
+                      <td className="px-4 py-3">Up & Down Toll</td>
+                    </tr>
+                    <tr className="hover:bg-gray-50">
+                      <td className="px-4 py-3 font-semibold">INNOVA</td>
+                      <td className="px-4 py-3">₹18/KM</td>
+                      <td className="px-4 py-3">₹400</td>
+                      <td className="px-4 py-3">Up & Down Toll</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <h3 className="text-xl font-bold text-gray-800 mb-4">Additional Information</h3>
             <div className="grid md:grid-cols-2 gap-6 text-left">
               <div>
                 <h4 className="font-semibold text-gray-800 mb-2">Minimum Distance:</h4>
