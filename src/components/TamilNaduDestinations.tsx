@@ -84,7 +84,7 @@ const TamilNaduDestinations: React.FC = () => {
     icon: Building,
     highlights: ['Textile Industry', 'Marudamalai Temple', 'Industrial Hub', 'Gateway to Kerala']
   },
-    },
+    
     {
     name: 'Trichy',
     image: 'https://images.pexels.com/photos/9166266/pexels-photo-9166266.jpeg?auto=compress&cs=tinysrgb&w=400',
