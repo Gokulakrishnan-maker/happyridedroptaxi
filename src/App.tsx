@@ -1,5 +1,6 @@
 import React from 'react';
 import { HelmetProvider } from 'react-helmet-async';
+import GoogleMapsLoader from './components/GoogleMapsLoader';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import BookingForm from './components/BookingForm';
@@ -18,22 +19,24 @@ import SEO from './components/SEO';
 function App() {
   return (
     <HelmetProvider>
-      <div className="min-h-screen">
-        <SEO />
-        <Header />
-        <Hero />
-        <BookingForm />
-        <TariffDetails />
-        <Pricing />
-        <PopularRoutes />
-        <TamilNaduDestinations />
-        <Testimonials />
-        <Contact />
-        <FareDetails />
-        <Footer />
-        <WhatsAppButton />
-        <PhoneButton />
-      </div>
+      <GoogleMapsLoader>
+        <div className="min-h-screen">
+          <SEO />
+          <Header />
+          <Hero />
+          <BookingForm />
+          <TariffDetails />
+          <Pricing />
+          <PopularRoutes />
+          <TamilNaduDestinations />
+          <Testimonials />
+          <Contact />
+          <FareDetails />
+          <Footer />
+          <WhatsAppButton />
+          <PhoneButton />
+        </div>
+      </GoogleMapsLoader>
     </HelmetProvider>
   );
 }
