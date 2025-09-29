@@ -3,6 +3,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import BookingForm from './components/BookingForm';
+import TariffDetails from './components/TariffDetails';
 import PopularRoutes from './components/PopularRoutes';
 import Pricing from './components/Pricing';
 import Testimonials from './components/Testimonials';
@@ -21,6 +22,7 @@ function App() {
         <Header />
         <Hero />
         <BookingForm />
+        <TariffDetails />
         <Pricing />
         <PopularRoutes />
         <TamilNaduDestinations />
