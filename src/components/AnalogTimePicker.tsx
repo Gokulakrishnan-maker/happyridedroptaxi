@@ -61,31 +61,49 @@ const AnalogTimePicker: React.FC<AnalogTimePickerProps> = ({
   const rotation = selectingHour ? (hour % 12) * 30 - 90 : minute * 6 - 90;
 
   const renderNumbers = () => {
-    return (selectingHour
-      ? Array.from({ length: 12 }, (_, i) => i + 1)
-      : [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55]
-    ).map((num) => {
-      const angle = (num * (selectingHour ? 30 : 6)) - 90;
-      const rad = (angle * Math.PI) / 180;
-      const radius = 100;
-      const x = Math.cos(rad) * radius;
-      const y = Math.sin(rad) * radius;
-      const selected = selectingHour ? hour === num : minute === num;
-      return (
-        <div
-          key={num}
-          onClick={() =>
-            selectingHour ? setHour(num) : setMinute(num)
-          }
-          className={`absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer ${
-            selected ? "text-blue-600 font-bold" : "text-gray-700"
-          }`}
-          style={{ left: `calc(50% + ${x}px)`, top: `calc(50% + ${y}px)` }}
-        >
-          {num.toString().padStart(2, "0")}
-        </div>
-      );
-    });
+    if (selectingHour) {
+      return Array.from({ length: 12 }, (_, i) => i + 1).map((num) => {
+        const angle = num * 30 - 90;
+        const rad = (angle * Math.PI) / 180;
+        const radius = 100;
+        const x = Math.cos(rad) * radius;
+        const y = Math.sin(rad) * radius;
+        const selected = hour === num;
+        return (
+          <div
+            key={num}
+            onClick={() => setHour(num)}
+            className={`absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer ${
+              selected ? "text-blue-600 font-bold" : "text-gray-700"
+            }`}
+            style={{ left: `calc(50% + ${x}px)`, top: `calc(50% + ${y}px)` }}
+          >
+            {num}
+          </div>
+        );
+      });
+    } else {
+      return Array.from({ length: 60 }, (_, i) => i).map((num) => {
+        const angle = num * 6 - 90;
+        const rad = (angle * Math.PI) / 180;
+        const radius = 100;
+        const x = Math.cos(rad) * radius;
+        const y = Math.sin(rad) * radius;
+        const selected = minute === num;
+        return (
+          <div
+            key={num}
+            onClick={() => setMinute(num)}
+            className={`absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer ${
+              selected ? "text-blue-600 font-bold" : num % 5 === 0 ? "text-gray-700" : "text-gray-400 text-xs"
+            }`}
+            style={{ left: `calc(50% + ${x}px)`, top: `calc(50% + ${y}px)` }}
+          >
+            {num % 5 === 0 ? num.toString().padStart(2, "0") : "."}
+          </div>
+        );
+      });
+    }
   };
 
   return (
