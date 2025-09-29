@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { Clock } from "lucide-react";
 
 interface AnalogClockProps {
   value: string;
