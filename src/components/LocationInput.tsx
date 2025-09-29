@@ -123,7 +123,7 @@ const LocationInput: React.FC<LocationInputProps> = ({
           type="text"
           value={value}
           onChange={handleInputChange}
-          onFocus={handleFocus}
+          onFocus={() => setIsLoading(false)}
           className={`w-full px-4 py-3 pr-10 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors ${
             error ? 'border-red-300' : 'border-gray-300'
           }`}
