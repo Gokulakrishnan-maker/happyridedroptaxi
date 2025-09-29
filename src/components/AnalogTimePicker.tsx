@@ -52,6 +52,8 @@ const AnalogTimePicker: React.FC<AnalogTimePickerProps> = ({
       let h = Math.round(angle / 30);
       if (h === 0) h = 12;
       setHour(h);
+      // 🔥 Auto-switch to minutes after selecting hour
+      setSelectingHour(false);
     } else {
       let m = Math.round(angle / 6) % 60;
       setMinute(m);
@@ -62,9 +64,7 @@ const AnalogTimePicker: React.FC<AnalogTimePickerProps> = ({
     setDragging(true);
     updateFromPosition(e.clientX, e.clientY);
   };
-
   const handleMouseUp = () => setDragging(false);
-
   const handleMouseMove = (e: MouseEvent) => {
     if (dragging) updateFromPosition(e.clientX, e.clientY);
   };
@@ -87,13 +87,13 @@ const AnalogTimePicker: React.FC<AnalogTimePickerProps> = ({
       const num = i + 1;
       const angle = num * 30 - 90;
       const rad = (angle * Math.PI) / 180;
-      const r = 90;
+      const r = 100;
       const x = Math.cos(rad) * r;
       const y = Math.sin(rad) * r;
       return (
         <div
           key={num}
-          className="absolute transform -translate-x-1/2 -translate-y-1/2 text-gray-700 font-medium text-lg"
+          className="absolute transform -translate-x-1/2 -translate-y-1/2 text-gray-700 font-medium"
           style={{ left: `calc(50% + ${x}px)`, top: `calc(50% + ${y}px)` }}
         >
           {num}
@@ -107,13 +107,13 @@ const AnalogTimePicker: React.FC<AnalogTimePickerProps> = ({
       const num = i * 5;
       const angle = num * 6 - 90;
       const rad = (angle * Math.PI) / 180;
-      const r = 90;
+      const r = 100;
       const x = Math.cos(rad) * r;
       const y = Math.sin(rad) * r;
       return (
         <div
           key={num}
-          className="absolute transform -translate-x-1/2 -translate-y-1/2 text-gray-700 font-medium text-lg"
+          className="absolute transform -translate-x-1/2 -translate-y-1/2 text-gray-700 font-medium"
           style={{ left: `calc(50% + ${x}px)`, top: `calc(50% + ${y}px)` }}
         >
           {num.toString().padStart(2, "0")}
@@ -122,43 +122,43 @@ const AnalogTimePicker: React.FC<AnalogTimePickerProps> = ({
     });
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-      <div className="bg-white rounded-lg shadow-2xl w-80 overflow-hidden">
+    <div className="fixed inset-0 flex items-center justify-center bg-black/50">
+      <div className="bg-white rounded-lg shadow-lg w-80 overflow-hidden">
         {/* Header */}
         <div className="bg-sky-500 px-6 py-6 text-white flex justify-between items-center">
-          <div className="flex items-center text-5xl font-light">
+          <div className="text-5xl font-bold">
             <span
               className={`cursor-pointer ${
-                selectingHour ? "text-white" : "opacity-70"
+                selectingHour ? "text-black" : "opacity-70"
               }`}
               onClick={() => setSelectingHour(true)}
             >
-              {hour}
+              {hour.toString().padStart(2, "0")}
             </span>
-            <span className="mx-2">:</span>
+            :
             <span
-              className={`cursor-pointer border-2 px-2 py-1 rounded ${
-                !selectingHour ? "border-white text-white" : "border-transparent opacity-70"
+              className={`cursor-pointer ${
+                !selectingHour ? "text-black" : "opacity-70"
               }`}
               onClick={() => setSelectingHour(false)}
             >
               {minute.toString().padStart(2, "0")}
             </span>
           </div>
-          <div className="flex flex-col text-lg ml-4">
+          <div className="flex flex-col text-lg">
             <button
               onClick={() => setAmpm("AM")}
-              className={`px-2 py-1 rounded ${
-                ampm === "AM" ? "bg-white text-sky-500 font-semibold" : "text-white opacity-70"
-              }`}
+              className={`${
+                ampm === "AM" ? "text-black" : "opacity-60"
+              } font-semibold`}
             >
               AM
             </button>
             <button
               onClick={() => setAmpm("PM")}
-              className={`px-2 py-1 rounded mt-1 ${
-                ampm === "PM" ? "bg-white text-sky-500 font-semibold" : "text-white opacity-70"
-              }`}
+              className={`${
+                ampm === "PM" ? "text-black" : "opacity-60"
+              } font-semibold`}
             >
               PM
             </button>
@@ -166,21 +166,21 @@ const AnalogTimePicker: React.FC<AnalogTimePickerProps> = ({
         </div>
 
         {/* Clock */}
-        <div className="p-8 flex justify-center">
+        <div className="p-6 flex justify-center">
           <div
             ref={clockRef}
             onMouseDown={handleMouseDown}
             onClick={(e) => updateFromPosition(e.clientX, e.clientY)}
-            className="relative w-64 h-64 bg-gray-200 rounded-full cursor-pointer"
+            className="relative w-64 h-64 bg-gray-100 rounded-full"
           >
             {selectingHour ? renderHourNumbers() : renderMinuteNumbers()}
 
-            {/* Clock Hand */}
+            {/* Hand */}
             <div
-              className="absolute bg-sky-500 origin-bottom rounded-full"
+              className="absolute bg-sky-500 origin-bottom"
               style={{
-                width: "3px",
-                height: selectingHour ? "70px" : "80px",
+                width: selectingHour ? "3px" : "2px",
+                height: selectingHour ? "80px" : "110px",
                 left: "50%",
                 top: "50%",
                 transform: `translateX(-50%) translateY(-100%) rotate(${
@@ -188,24 +188,6 @@ const AnalogTimePicker: React.FC<AnalogTimePickerProps> = ({
                 }deg)`,
               }}
             />
-            
-            {/* Clock Hand Dot */}
-            <div 
-              className="absolute bg-sky-500 rounded-full"
-              style={{
-                width: "12px",
-                height: "12px",
-                left: "50%",
-                top: "50%",
-                transform: `translateX(-50%) translateY(-50%) translate(${
-                  Math.cos(((selectingHour ? hourRotation : minuteRotation) + 90) * Math.PI / 180) * (selectingHour ? 70 : 80)
-                }px, ${
-                  Math.sin(((selectingHour ? hourRotation : minuteRotation) + 90) * Math.PI / 180) * (selectingHour ? 70 : 80)
-                }px)`,
-              }}
-            />
-            
-            {/* Center Dot */}
             <div className="absolute w-4 h-4 bg-sky-500 rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
           </div>
         </div>
@@ -214,13 +196,13 @@ const AnalogTimePicker: React.FC<AnalogTimePickerProps> = ({
         <div className="flex justify-between px-6 py-4 border-t">
           <button
             onClick={onClose}
-            className="text-sky-500 font-semibold text-lg hover:text-sky-600 transition-colors"
+            className="text-sky-500 font-semibold text-lg"
           >
             CANCEL
           </button>
           <button
             onClick={handleOK}
-            className="text-sky-500 font-semibold text-lg hover:text-sky-600 transition-colors"
+            className="text-sky-500 font-semibold text-lg"
           >
             OK
           </button>
