@@ -14,7 +14,7 @@ const TamilNaduDestinations: React.FC = () => {
     },
     {
       name: 'Thanjavur',
-     image: 'https://images.pexels.com/photos/9166266/pexels-photo-9166266.jpeg?auto=compress&cs=tinysrgb&w=400',
+     image: 'https://happyridedroptaxi.com/assets/BrihadisvaraTemple.png',
      distance: '350 km from Chennai',
      duration: '6-7 hours',
      description: 'Historic city famous for the Brihadeeswarar Temple, Chola architecture, and rich cultural heritage',
@@ -23,7 +23,7 @@ const TamilNaduDestinations: React.FC = () => {
     },
     {
       name: 'Ooty Hill Station',
-      image: 'https://images.pexels.com/photos/1271619/pexels-photo-1271619.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop',
+      image: 'https://happyridedroptaxi.com/assets/ooty-hillstation.png',
       category: 'Hill Station',
       description: 'Queen of Hill Stations with tea gardens and cool climate',
       distance: '540 km from Chennai',
@@ -32,7 +32,7 @@ const TamilNaduDestinations: React.FC = () => {
     },
     {
     name: 'Rameswaram',
-    image: 'https://images.pexels.com/photos/8078361/pexels-photo-8078361.jpeg?auto=compress&cs=tinysrgb&w=400',
+    image: 'https://happyridedroptaxi.com/assets/Ramanathaswamy-Temple.png',
     distance: '560 km from Chennai',
     duration: '9-10 hours',
     description: 'Sacred island town with the famous Rameswaram Temple and pristine beaches',
@@ -41,7 +41,7 @@ const TamilNaduDestinations: React.FC = () => {
     },
     {
       name: 'Kanyakumari',
-      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSVYkyFjgbLCZ9CbI90sWef31in22ymqHp-KQ&s',
+      image: 'https://happyridedroptaxi.com/assets/kanyakumari.png',
       distance: '700 km from Chennai',
       duration: '12 hours',
       description: 'Southernmost tip with Thiruvalluvar Statue',
@@ -50,7 +50,7 @@ const TamilNaduDestinations: React.FC = () => {
     },
      {
       name: 'Kodaikanal',
-      image: 'https://images.pexels.com/photos/1450360/pexels-photo-1450360.jpeg?auto=compress&cs=tinysrgb&w=400',
+      image: 'https://happyridedroptaxi.com/assets/kodaikanal-hillstation.png',
       distance: '520 km from Chennai',
       duration: '8-9 hours',
       description: 'Princess of Hill Stations with pristine lakes',
@@ -59,7 +59,7 @@ const TamilNaduDestinations: React.FC = () => {
     },
     {
     name: 'Tirupati',
-    image: 'https://images.pexels.com/photos/9166266/pexels-photo-9166266.jpeg?auto=compress&cs=tinysrgb&w=400',
+    image: 'https://happyridedroptaxi.com/assets/tirupati.png',
     distance: '150 km from Chennai',
     duration: '3 hours',
     description: 'Famous pilgrimage city with the world-renowned Venkateswara Temple',
@@ -68,7 +68,7 @@ const TamilNaduDestinations: React.FC = () => {
     },
     {
     name: 'Coimbatore',
-    image: 'https://images.pexels.com/photos/3573382/pexels-photo-3573382.jpeg?auto=compress&cs=tinysrgb&w=400',
+    image: 'https://happyridedroptaxi.com/assets/coimbatore-isha.png',
     distance: '500 km from Chennai',
     duration: '8-9 hours',
     description: 'Industrial city known as Manchester of South India with temples and textile industry',
@@ -78,7 +78,7 @@ const TamilNaduDestinations: React.FC = () => {
     
     {
     name: 'Trichy',
-    image: 'https://images.pexels.com/photos/9166266/pexels-photo-9166266.jpeg?auto=compress&cs=tinysrgb&w=400',
+    image: 'https://happyridedroptaxi.com/assets/Srirangam-Temple.png',
     distance: '320 km from Chennai',
     duration: '5-6 hours',
     description: 'Historic city with Rock Fort and bustling markets',
@@ -87,7 +87,7 @@ const TamilNaduDestinations: React.FC = () => {
    },
         { 
       name: 'Mysore',
-      image: 'https://images.pexels.com/photos/1007025/pexels-photo-1007025.jpeg?auto=compress&cs=tinysrgb&w=400',
+      image: 'https://happyridedroptaxi.com/assets/mysore-palace.png',
       distance: '500 km from Chennai',
       duration: '8-9 hours',
       description: 'City of Palaces with rich heritage',
@@ -96,7 +96,7 @@ const TamilNaduDestinations: React.FC = () => {
     },
        {
     name: 'Pondicherry',
-    image: 'https://images.pexels.com/photos/3573382/pexels-photo-3573382.jpeg?auto=compress&cs=tinysrgb&w=400',
+    image: 'https://happyridedroptaxi.com/assets/pondicherry.png',
     distance: '160 km from Chennai',
     duration: '3-4 hours',
     description: 'French colonial charm with beaches, cafes, and serene coastal vibe',
