@@ -1,6 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { MapPin, Loader, AlertCircle } from 'lucide-react';
-import { loadGoogleMaps, isGoogleMapsLoaded } from '../utils/googleMapsLoader';
+import { MapPin, Loader } from 'lucide-react';
 
 interface LocationInputProps {
   label: string;
@@ -22,53 +21,20 @@ const LocationInput: React.FC<LocationInputProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [isMapsLoaded, setIsMapsLoaded] = useState(false);
-  const [loadError, setLoadError] = useState<string>('');
 
   useEffect(() => {
-    const initializeGoogleMaps = async () => {
-      try {
-        setIsLoading(true);
-        setLoadError('');
-        
-        // Check if already loaded
-        if (isGoogleMapsLoaded()) {
-          setIsMapsLoaded(true);
-          initializeAutocomplete();
-          setIsLoading(false);
-          return;
-        }
-
-        // Load Google Maps API
-        await loadGoogleMaps();
-        setIsMapsLoaded(true);
-        initializeAutocomplete();
-        setIsLoading(false);
-      } catch (error) {
-        console.error('Error loading Google Maps:', error);
-        setLoadError('Failed to load location services');
-        setIsMapsLoaded(false);
-        setIsLoading(false);
-      }
-    };
-
     const initializeAutocomplete = () => {
       if (!inputRef.current || !window.google?.maps?.places) {
         return;
       }
 
       try {
-        // Clean up existing autocomplete
-        if (autocompleteRef.current) {
-          window.google?.maps?.event?.clearInstanceListeners(autocompleteRef.current);
-        }
-
-        // Create new autocomplete instance
+        // Create autocomplete instance
         autocompleteRef.current = new window.google.maps.places.Autocomplete(
           inputRef.current,
           {
             types: ['geocode'],
-            componentRestrictions: { country: 'IN' },
+            componentRestrictions: { country: 'IN' }, // Restrict to India
             fields: ['formatted_address', 'geometry', 'name', 'place_id']
           }
         );
@@ -84,16 +50,30 @@ const LocationInput: React.FC<LocationInputProps> = ({
             } : undefined;
 
             onChange(place.formatted_address, coordinates);
+            setIsLoading(false);
           }
         });
 
       } catch (error) {
         console.error('Error initializing Google Maps Autocomplete:', error);
-        setLoadError('Location autocomplete unavailable');
       }
     };
 
-    initializeGoogleMaps();
+    // Check if Google Maps is already loaded
+    if (window.google?.maps?.places) {
+      initializeAutocomplete();
+    } else {
+      // Wait for Google Maps to load
+      const checkGoogleMaps = setInterval(() => {
+        if (window.google?.maps?.places) {
+          clearInterval(checkGoogleMaps);
+          initializeAutocomplete();
+        }
+      }, 100);
+
+      // Cleanup interval after 10 seconds
+      setTimeout(() => clearInterval(checkGoogleMaps), 10000);
+    }
 
     return () => {
       if (autocompleteRef.current) {
@@ -105,6 +85,14 @@ const LocationInput: React.FC<LocationInputProps> = ({
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     onChange(newValue);
+    
+    if (newValue.length > 2) {
+      setIsLoading(true);
+    }
+  };
+
+  const handleFocus = () => {
+    setIsLoading(false);
   };
 
   return (
@@ -119,6 +107,7 @@ const LocationInput: React.FC<LocationInputProps> = ({
           type="text"
           value={value}
           onChange={handleInputChange}
+          onFocus={handleFocus}
           className={`w-full px-4 py-3 pr-10 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
             error ? 'border-red-300' : 'border-gray-300'
           }`}
@@ -130,23 +119,12 @@ const LocationInput: React.FC<LocationInputProps> = ({
             <Loader className="w-5 h-5 text-blue-500 animate-spin" />
           </div>
         )}
-        {loadError && (
-          <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-            <AlertCircle className="w-5 h-5 text-orange-500" title={loadError} />
-          </div>
-        )}
       </div>
       {error && (
         <p className="text-red-500 text-sm mt-1 flex items-center">
-          <AlertCircle className="w-4 h-4 mr-1" />
+          <MapPin className="w-4 h-4 mr-1" />
           {error}
         </p>
-      )}
-      {loadError && (
-        <p className="text-orange-600 text-xs mt-1">{loadError}</p>
-      )}
-      {!isMapsLoaded && !loadError && (
-        <p className="text-gray-500 text-xs mt-1">Loading location suggestions...</p>
       )}
     </div>
   );
