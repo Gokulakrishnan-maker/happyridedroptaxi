@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapPin, Camera, Clock, Star } from 'lucide-react';
+import { MapPin, Camera, Clock, Star, Waves, Mountain, Building } from 'lucide-react';
 
 const TamilNaduDestinations: React.FC = () => {
   const destinations = [
