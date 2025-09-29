@@ -8,6 +8,7 @@ declare global {
   interface Window {
     google: any;
     initGoogleMaps: () => void;
+    _googleMapsApiLoadedPromise?: Promise<void>;
   }
 }
 
@@ -22,28 +23,14 @@ const GoogleMapsLoader: React.FC<GoogleMapsLoaderProps> = ({ children }) => {
       return;
     }
 
-    // Check if script is already being loaded
-    if (document.querySelector('script[src*="maps.googleapis.com"]')) {
-      // Wait for existing script to load
-      const checkLoaded = setInterval(() => {
-        if (window.google && window.google.maps) {
-          setIsLoaded(true);
-          clearInterval(checkLoaded);
-        }
-      }, 100);
-
-      // Timeout after 10 seconds
-      setTimeout(() => {
-        clearInterval(checkLoaded);
-        if (!window.google || !window.google.maps) {
-          setError('Google Maps failed to load');
-        }
-      }, 10000);
-
+    // Check if loading is already in progress
+    if (window._googleMapsApiLoadedPromise) {
+      window._googleMapsApiLoadedPromise
+        .then(() => setIsLoaded(true))
+        .catch(() => setError('Google Maps failed to load'));
       return;
     }
 
-    // Load Google Maps script dynamically
     const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
     
     if (!apiKey) {
@@ -51,30 +38,29 @@ const GoogleMapsLoader: React.FC<GoogleMapsLoaderProps> = ({ children }) => {
       return;
     }
 
-    const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=initGoogleMaps`;
-    script.async = true;
-    script.defer = true;
+    // Create a global promise to manage loading
+    window._googleMapsApiLoadedPromise = new Promise<void>((resolve, reject) => {
+      // Global callback function
+      window.initGoogleMaps = () => {
+        resolve();
+      };
 
-    // Global callback function
-    window.initGoogleMaps = () => {
-      setIsLoaded(true);
-    };
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=initGoogleMaps`;
+      script.async = true;
+      script.defer = true;
 
-    script.onerror = () => {
-      setError('Failed to load Google Maps');
-    };
+      script.onerror = () => {
+        reject(new Error('Failed to load Google Maps'));
+      };
 
-    document.head.appendChild(script);
+      document.head.appendChild(script);
+    });
 
-    return () => {
-      // Cleanup
-      const existingScript = document.querySelector('script[src*="maps.googleapis.com"]');
-      if (existingScript) {
-        document.head.removeChild(existingScript);
-      }
-      delete window.initGoogleMaps;
-    };
+    // Wait for the promise to resolve
+    window._googleMapsApiLoadedPromise
+      .then(() => setIsLoaded(true))
+      .catch(() => setError('Failed to load Google Maps'));
   }, []);
 
   if (error) {
