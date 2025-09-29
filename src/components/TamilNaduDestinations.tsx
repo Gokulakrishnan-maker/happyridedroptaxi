@@ -5,7 +5,7 @@ const TamilNaduDestinations: React.FC = () => {
   const destinations = [
     {
       name: 'Madurai',
-      image: 'https://images.pexels.com/photos/1007025/pexels-photo-1007025.jpeg?auto=compress&cs=tinysrgb&w=400',
+      image: 'https://happyridedroptaxi.com/assets/meenakshi-amman-temple.png',
       distance: '460 km from Chennai',
       duration: '7-8 hours',
       description: 'Temple city with Meenakshi Amman Temple',
