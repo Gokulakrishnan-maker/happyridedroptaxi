@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { loadGoogleMaps } from '../utils/googleMapsLoader';
 
 interface Coordinates {
   lat: number;
@@ -21,6 +22,9 @@ export const useDistanceCalculation = () => {
     setIsCalculating(true);
 
     try {
+      // Ensure Google Maps is loaded
+      await loadGoogleMaps();
+
       if (!window.google?.maps) {
         throw new Error('Google Maps not loaded');
       }

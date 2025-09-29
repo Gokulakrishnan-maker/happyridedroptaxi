@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { MapPin, Loader } from 'lucide-react';
+import { loadGoogleMaps, isGoogleMapsLoaded } from '../utils/googleMapsLoader';
 
 interface LocationInputProps {
   label: string;
@@ -21,33 +22,25 @@ const LocationInput: React.FC<LocationInputProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [isGoogleMapsLoaded, setIsGoogleMapsLoaded] = useState(false);
+  const [isMapsLoaded, setIsMapsLoaded] = useState(false);
 
   useEffect(() => {
-    const loadGoogleMaps = async () => {
+    const initializeGoogleMaps = async () => {
       try {
-        // Check if Google Maps is already loaded
-        if (window.google?.maps?.places) {
-          setIsGoogleMapsLoaded(true);
+        // Check if already loaded
+        if (isGoogleMapsLoaded()) {
+          setIsMapsLoaded(true);
           initializeAutocomplete();
           return;
         }
 
-        // Load Google Maps API (using a demo key - replace with your actual key)
-        const script = document.createElement('script');
-        script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dOWTgaJzuU17R8&libraries=places&callback=initMap`;
-        script.async = true;
-        script.defer = true;
-        
-        // Create global callback
-        (window as any).initMap = () => {
-          setIsGoogleMapsLoaded(true);
-          initializeAutocomplete();
-        };
-
-        document.head.appendChild(script);
+        // Load Google Maps API using the singleton loader
+        await loadGoogleMaps();
+        setIsMapsLoaded(true);
+        initializeAutocomplete();
       } catch (error) {
         console.error('Error loading Google Maps:', error);
+        setIsMapsLoaded(false);
       }
     };
 
@@ -87,7 +80,7 @@ const LocationInput: React.FC<LocationInputProps> = ({
       }
     };
 
-    loadGoogleMaps();
+    initializeGoogleMaps();
 
     return () => {
       if (autocompleteRef.current) {
@@ -100,7 +93,7 @@ const LocationInput: React.FC<LocationInputProps> = ({
     const newValue = e.target.value;
     onChange(newValue);
     
-    if (newValue.length > 2 && isGoogleMapsLoaded) {
+    if (newValue.length > 2 && isMapsLoaded) {
       setIsLoading(true);
     }
   };
@@ -133,7 +126,7 @@ const LocationInput: React.FC<LocationInputProps> = ({
             <Loader className="w-5 h-5 text-blue-500 animate-spin" />
           </div>
         )}
-        {!isGoogleMapsLoaded && (
+        {!isMapsLoaded && (
           <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
             <div className="w-2 h-2 bg-orange-400 rounded-full animate-pulse" title="Loading Maps..."></div>
           </div>
@@ -145,7 +138,7 @@ const LocationInput: React.FC<LocationInputProps> = ({
           {error}
         </p>
       )}
-      {!isGoogleMapsLoaded && (
+      {!isMapsLoaded && (
         <p className="text-gray-500 text-xs mt-1">Loading location suggestions...</p>
       )}
     </div>
