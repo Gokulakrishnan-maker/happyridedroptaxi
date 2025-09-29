@@ -30,7 +30,7 @@ const pricingPlans = [
       'GPS Tracking',
       'Customer Support',
     ],
-    popular: false,
+    popular: true,
   },
   {
     name: 'SUV',
@@ -46,7 +46,7 @@ const pricingPlans = [
       'Premium Comfort',
       'Customer Support',
     ],
-    popular: true,
+    popular: false,
   },
   {
     name: 'Innova',
