@@ -139,8 +139,8 @@ const TamilNaduDestinations: React.FC = () => {
     <section className="py-20 bg-white">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-800 mb-4">Explore Tamil Nadu's Treasures</h2>
-          <p className="text-gray-600 text-lg max-w-3xl mx-auto">
+          <h2 className="text-4xl font-bold text-black mb-4">Explore Tamil Nadu's Treasures</h2>
+          <p className="text-gray-700 text-lg max-w-3xl mx-auto font-semibold">
             Discover the rich heritage, stunning temples, scenic hill stations, and vibrant cities of Tamil Nadu. 
             We provide comfortable taxi services to all these amazing destinations.
           </p>
@@ -150,7 +150,7 @@ const TamilNaduDestinations: React.FC = () => {
           {destinations.map((destination, index) => (
             <div 
               key={index}
-              className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden hover:-translate-y-2"
+              className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden hover:-translate-y-2 border-2 border-yellow-300"
             >
               <div className="relative h-64 overflow-hidden">
                 <img
@@ -169,20 +169,20 @@ const TamilNaduDestinations: React.FC = () => {
               </div>
 
               <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-blue-600 transition-colors">
+                <h3 className="text-xl font-bold text-black mb-2 group-hover:text-yellow-600 transition-colors">
                   {destination.name}
                 </h3>
-                <p className="text-gray-600 mb-4 leading-relaxed">
+                <p className="text-gray-700 mb-4 leading-relaxed font-semibold">
                   {destination.description}
                 </p>
 
                 <div className="space-y-3 mb-4">
-                  <div className="flex items-center text-sm text-gray-600">
-                    <MapPin className="w-4 h-4 mr-2 text-blue-500" />
+                  <div className="flex items-center text-sm text-gray-700 font-semibold">
+                    <MapPin className="w-4 h-4 mr-2 text-black" />
                     <span>{destination.distance}</span>
                   </div>
-                  <div className="flex items-center text-sm text-gray-600">
-                    <Clock className="w-4 h-4 mr-2 text-emerald-500" />
+                  <div className="flex items-center text-sm text-gray-700 font-semibold">
+                    <Clock className="w-4 h-4 mr-2 text-yellow-600" />
                     <span>{destination.duration}</span>
                   </div>
                 </div>
@@ -191,7 +191,7 @@ const TamilNaduDestinations: React.FC = () => {
                   {destination.highlights.map((highlight, highlightIndex) => (
                     <span 
                       key={highlightIndex}
-                      className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full"
+                      className="px-2 py-1 bg-yellow-100 text-black text-xs rounded-full font-semibold"
                     >
                       {highlight}
                     </span>
@@ -205,7 +205,7 @@ const TamilNaduDestinations: React.FC = () => {
                       element.scrollIntoView({ behavior: 'smooth' });
                     }
                   }}
-                  className="w-full py-3 bg-gradient-to-r from-blue-600 to-emerald-600 text-white rounded-lg hover:from-blue-700 hover:to-emerald-700 transition-all duration-300 font-semibold flex items-center justify-center group"
+                  className="w-full py-3 bg-gradient-to-r from-yellow-400 to-yellow-500 text-black rounded-lg hover:from-yellow-500 hover:to-yellow-600 transition-all duration-300 font-bold flex items-center justify-center group"
                 >
                   <Camera className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
                   Book Trip to {destination.name.split(',')[0]}
@@ -216,25 +216,25 @@ const TamilNaduDestinations: React.FC = () => {
         </div>
 
         <div className="text-center mt-16">
-          <div className="bg-gradient-to-r from-blue-50 to-emerald-50 rounded-xl p-8 max-w-4xl mx-auto">
-            <Star className="w-12 h-12 text-blue-600 mx-auto mb-4" />
-            <h3 className="text-2xl font-bold text-gray-800 mb-4">Plan Your Tamil Nadu Adventure</h3>
-            <p className="text-gray-600 mb-6 leading-relaxed">
+          <div className="bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-xl p-8 max-w-4xl mx-auto border-2 border-yellow-300">
+            <Star className="w-12 h-12 text-black mx-auto mb-4" />
+            <h3 className="text-2xl font-bold text-black mb-4">Plan Your Tamil Nadu Adventure</h3>
+            <p className="text-gray-700 mb-6 leading-relaxed font-semibold">
               From ancient temples to scenic hill stations, Tamil Nadu offers incredible diversity. 
               Our experienced drivers know the best routes and can guide you to hidden gems along the way.
             </p>
             <div className="grid md:grid-cols-3 gap-6 text-center">
               <div>
-                <div className="text-2xl font-bold text-blue-600 mb-1">50+</div>
-                <div className="text-gray-600">Destinations Covered</div>
+                <div className="text-2xl font-bold text-black mb-1">50+</div>
+                <div className="text-gray-700 font-semibold">Destinations Covered</div>
               </div>
               <div>
-                <div className="text-2xl font-bold text-emerald-600 mb-1">1000+</div>
-                <div className="text-gray-600">Happy Travelers</div>
+                <div className="text-2xl font-bold text-black mb-1">1000+</div>
+                <div className="text-gray-700 font-semibold">Happy Travelers</div>
               </div>
               <div>
-                <div className="text-2xl font-bold text-orange-600 mb-1">24/7</div>
-                <div className="text-gray-600">Service Available</div>
+                <div className="text-2xl font-bold text-black mb-1">24/7</div>
+                <div className="text-gray-700 font-semibold">Service Available</div>
               </div>
             </div>
           </div>

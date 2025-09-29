@@ -48,11 +48,11 @@ const Testimonials: React.FC = () => {
   ];
 
   return (
-    <section className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
+    <section className="py-20 bg-gradient-to-br from-yellow-50 to-black/5">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-800 mb-4">What Our Customers Say</h2>
-          <p className="text-gray-600 text-lg max-w-3xl mx-auto">
+          <h2 className="text-4xl font-bold text-black mb-4">What Our Customers Say</h2>
+          <p className="text-gray-700 text-lg max-w-3xl mx-auto font-semibold">
             Read genuine reviews from our satisfied customers who have experienced our premium taxi service
           </p>
         </div>
@@ -61,11 +61,11 @@ const Testimonials: React.FC = () => {
           {testimonials.map((testimonial, index) => (
             <div 
               key={index}
-              className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 group hover:-translate-y-2"
+              className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 group hover:-translate-y-2 border-2 border-yellow-300"
             >
               <div className="mb-6">
-                <Quote className="w-10 h-10 text-blue-200 mb-4" />
-                <p className="text-gray-700 leading-relaxed italic">"{testimonial.comment}"</p>
+                <Quote className="w-10 h-10 text-yellow-300 mb-4" />
+                <p className="text-gray-700 leading-relaxed italic font-semibold">"{testimonial.comment}"</p>
               </div>
 
               <div className="flex items-center space-x-4">
@@ -76,8 +76,8 @@ const Testimonials: React.FC = () => {
                   loading="lazy"
                 />
                 <div className="flex-1">
-                  <h4 className="font-semibold text-gray-800">{testimonial.name}</h4>
-                  <p className="text-gray-600 text-sm">{testimonial.location}</p>
+                  <h4 className="font-bold text-black">{testimonial.name}</h4>
+                  <p className="text-gray-700 text-sm font-semibold">{testimonial.location}</p>
                 </div>
                 <div className="flex">
                   {[...Array(testimonial.rating)].map((_, starIndex) => (
@@ -93,19 +93,19 @@ const Testimonials: React.FC = () => {
         </div>
 
         <div className="text-center mt-16">
-          <div className="bg-white rounded-xl p-8 max-w-2xl mx-auto shadow-lg">
+          <div className="bg-white rounded-xl p-8 max-w-2xl mx-auto shadow-lg border-4 border-yellow-400">
             <div className="flex items-center justify-center space-x-2 mb-4">
               <div className="flex">
                 {[...Array(5)].map((_, index) => (
                   <Star key={index} className="w-6 h-6 text-yellow-400 fill-current" />
                 ))}
               </div>
-              <span className="text-2xl font-bold text-gray-800">4.9/5</span>
+              <span className="text-2xl font-bold text-black">4.9/5</span>
             </div>
-            <p className="text-gray-600 text-lg">
+            <p className="text-gray-700 text-lg font-semibold">
               Based on <strong>500+</strong> customer reviews
             </p>
-            <p className="text-gray-500 mt-2">
+            <p className="text-gray-600 mt-2 font-semibold">
               Join thousands of satisfied customers who trust Happy Ride Drop for their travel needs
             </p>
           </div>

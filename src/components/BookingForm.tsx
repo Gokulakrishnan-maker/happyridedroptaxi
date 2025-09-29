@@ -193,15 +193,15 @@ const BookingForm: React.FC = () => {
   // ... keep your validateForm, handleSubmit, handleInputChange, handleLocationChange, getFieldError as before
 
   return (
-    <section id="booking" className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
+    <section id="booking" className="py-20 bg-gradient-to-br from-yellow-50 to-black/5">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-800 mb-4">Book Your Ride</h2>
-            <p className="text-gray-600 text-lg">Fill in the details below to book your taxi</p>
+            <h2 className="text-4xl font-bold text-black mb-4">Book Your Ride</h2>
+            <p className="text-gray-700 text-lg font-semibold">Fill in the details below to book your taxi</p>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-2xl p-8 md:p-12">
+          <div className="bg-white rounded-2xl shadow-2xl p-8 md:p-12 border-4 border-yellow-400">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid md:grid-cols-2 gap-6">
                 {/* Pickup Location */}
@@ -227,15 +227,15 @@ const BookingForm: React.FC = () => {
 
               {/* Distance Information */}
               {(calculatedDistance || isCalculating) && (
-                <div className="bg-gradient-to-r from-blue-50 to-emerald-50 p-4 rounded-lg border border-blue-200">
+                <div className="bg-gradient-to-r from-yellow-50 to-yellow-100 p-4 rounded-lg border border-yellow-300">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
-                      <Navigation className="w-5 h-5 text-blue-600" />
-                      <span className="font-semibold text-gray-800">Distance Information</span>
+                      <Navigation className="w-5 h-5 text-black" />
+                      <span className="font-semibold text-black">Distance Information</span>
                     </div>
                     {isCalculating && (
-                      <div className="flex items-center space-x-2 text-blue-600">
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                      <div className="flex items-center space-x-2 text-black">
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-black"></div>
                         <span className="text-sm">Calculating...</span>
                       </div>
                     )}
@@ -243,12 +243,12 @@ const BookingForm: React.FC = () => {
                   {calculatedDistance && (
                     <div className="mt-2 grid grid-cols-2 gap-4 text-sm">
                       <div>
-                        <span className="text-gray-600">Distance: </span>
-                        <span className="font-semibold text-gray-800">{calculatedDistance} km</span>
+                        <span className="text-black">Distance: </span>
+                        <span className="font-semibold text-black">{calculatedDistance} km</span>
                       </div>
                       <div>
-                        <span className="text-gray-600">Duration: </span>
-                        <span className="font-semibold text-gray-800">{estimatedDuration}</span>
+                        <span className="text-black">Duration: </span>
+                        <span className="font-semibold text-black">{estimatedDuration}</span>
                       </div>
                     </div>
                   )}
@@ -265,7 +265,7 @@ const BookingForm: React.FC = () => {
                   <select
                     value={formData.tripType}
                     onChange={(e) => handleInputChange('tripType', e.target.value as 'one-way' | 'round-trip')}
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors"
                   >
                     <option value="one-way">One-way (Min 130 km)</option>
                     <option value="round-trip">Round-trip (Min 250 km)</option>
@@ -299,7 +299,7 @@ const BookingForm: React.FC = () => {
                     value={formData.date}
                     onChange={(e) => handleInputChange('date', e.target.value)}
                     min={new Date().toISOString().split('T')[0]}
-                    className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
+                    className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors ${
                       getFieldError('date') ? 'border-red-500' : 'border-gray-300'
                     }`}
                   />
@@ -318,7 +318,7 @@ const BookingForm: React.FC = () => {
                     type="time"
                     value={formData.time}
                     onChange={(e) => handleInputChange('time', e.target.value)}
-                    className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
+                    className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors ${
                       getFieldError('time') ? 'border-red-500' : 'border-gray-300'
                     }`}
                   />
@@ -340,7 +340,7 @@ const BookingForm: React.FC = () => {
                     value={formData.name}
                     onChange={(e) => handleInputChange('name', e.target.value)}
                     placeholder="Enter your full name"
-                    className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
+                    className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors ${
                       getFieldError('name') ? 'border-red-500' : 'border-gray-300'
                     }`}
                   />
@@ -360,7 +360,7 @@ const BookingForm: React.FC = () => {
                     value={formData.phone}
                     onChange={(e) => handleInputChange('phone', e.target.value)}
                     placeholder="Enter your phone number"
-                    className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
+                    className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors ${
                       getFieldError('phone') ? 'border-red-500' : 'border-gray-300'
                     }`}
                   />
@@ -396,15 +396,15 @@ const BookingForm: React.FC = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className={`w-full py-4 px-6 rounded-lg font-semibold text-white transition-all duration-300 flex items-center justify-center ${
+                className={`w-full py-4 px-6 rounded-lg font-bold transition-all duration-300 flex items-center justify-center ${
                   isLoading 
                     ? 'bg-gray-400 cursor-not-allowed' 
-                    : 'bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-700 hover:to-emerald-700 hover:shadow-lg transform hover:scale-105'
+                    : 'bg-gradient-to-r from-yellow-400 to-yellow-500 text-black hover:from-yellow-500 hover:to-yellow-600 hover:shadow-lg transform hover:scale-105'
                 }`}
               >
                 {isLoading ? (
                   <>
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-black mr-2"></div>
                     Submitting...
                   </>
                 ) : (

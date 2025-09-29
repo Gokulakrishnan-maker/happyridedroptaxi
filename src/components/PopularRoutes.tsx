@@ -48,11 +48,11 @@ const PopularRoutes: React.FC = () => {
   ];
 
   return (
-    <section className="py-20 bg-gradient-to-br from-blue-50 to-emerald-50">
+    <section className="py-20 bg-gradient-to-br from-yellow-50 to-black/5">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-800 mb-4">Popular Routes</h2>
-          <p className="text-gray-600 text-lg max-w-3xl mx-auto">
+          <h2 className="text-4xl font-bold text-black mb-4">Popular Routes</h2>
+          <p className="text-gray-700 text-lg max-w-3xl mx-auto font-semibold">
             Discover our most requested destinations with competitive pricing and reliable service
           </p>
         </div>
@@ -61,36 +61,36 @@ const PopularRoutes: React.FC = () => {
           {routes.map((route, index) => (
             <div 
               key={index}
-              className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group hover:-translate-y-2"
+              className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group hover:-translate-y-2 border-2 border-yellow-300"
             >
               <div className="p-6">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-2">
-                    <MapPin className="w-5 h-5 text-blue-600" />
-                    <span className="font-semibold text-gray-800">{route.from}</span>
+                    <MapPin className="w-5 h-5 text-black" />
+                    <span className="font-bold text-black">{route.from}</span>
                   </div>
-                  <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors" />
+                  <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-yellow-600 transition-colors" />
                   <div className="flex items-center space-x-2">
-                    <MapPin className="w-5 h-5 text-emerald-600" />
-                    <span className="font-semibold text-gray-800">{route.to}</span>
+                    <MapPin className="w-5 h-5 text-yellow-600" />
+                    <span className="font-bold text-black">{route.to}</span>
                   </div>
                 </div>
 
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Distance:</span>
-                    <span className="font-semibold text-gray-800">{route.distance}</span>
+                    <span className="text-gray-700 font-semibold">Distance:</span>
+                    <span className="font-bold text-black">{route.distance}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600 flex items-center">
+                    <span className="text-gray-700 flex items-center font-semibold">
                       <Clock className="w-4 h-4 mr-1" />
                       Duration:
                     </span>
-                    <span className="font-semibold text-gray-800">{route.duration}</span>
+                    <span className="font-bold text-black">{route.duration}</span>
                   </div>
-                  <div className="flex items-center justify-between pt-2 border-t border-gray-200">
-                    <span className="text-gray-600">Starting from:</span>
-                    <span className="text-xl font-bold text-green-600">{route.price}</span>
+                  <div className="flex items-center justify-between pt-2 border-t-2 border-yellow-300">
+                    <span className="text-gray-700 font-semibold">Starting from:</span>
+                    <span className="text-xl font-bold text-black">{route.price}</span>
                   </div>
                 </div>
 
@@ -101,7 +101,7 @@ const PopularRoutes: React.FC = () => {
                       element.scrollIntoView({ behavior: 'smooth' });
                     }
                   }}
-                  className="w-full mt-6 py-3 bg-gradient-to-r from-blue-600 to-emerald-600 text-white rounded-lg hover:from-blue-700 hover:to-emerald-700 transition-all duration-300 font-semibold"
+                  className="w-full mt-6 py-3 bg-gradient-to-r from-yellow-400 to-yellow-500 text-black rounded-lg hover:from-yellow-500 hover:to-yellow-600 transition-all duration-300 font-bold"
                 >
                   Book This Route
                 </button>
@@ -111,7 +111,7 @@ const PopularRoutes: React.FC = () => {
         </div>
 
         <div className="text-center mt-12">
-          <p className="text-gray-600 mb-6">
+          <p className="text-gray-700 mb-6 font-semibold">
             Don't see your destination? We cover many more routes!
           </p>
           <button 
@@ -121,7 +121,7 @@ const PopularRoutes: React.FC = () => {
                 element.scrollIntoView({ behavior: 'smooth' });
               }
             }}
-            className="inline-flex items-center px-6 py-3 border-2 border-blue-600 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-all duration-300"
+            className="inline-flex items-center px-6 py-3 border-2 border-black text-black rounded-lg hover:bg-black hover:text-yellow-400 transition-all duration-300 font-bold"
           >
             Contact Us for Custom Routes
             <ArrowRight className="ml-2 w-4 h-4" />

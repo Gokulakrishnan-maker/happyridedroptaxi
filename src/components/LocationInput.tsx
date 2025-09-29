@@ -108,7 +108,7 @@ const LocationInput: React.FC<LocationInputProps> = ({
           value={value}
           onChange={handleInputChange}
           onFocus={handleFocus}
-          className={`w-full px-4 py-3 pr-10 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
+          className={`w-full px-4 py-3 pr-10 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors ${
             error ? 'border-red-300' : 'border-gray-300'
           }`}
           placeholder={placeholder}
@@ -116,7 +116,7 @@ const LocationInput: React.FC<LocationInputProps> = ({
         />
         {isLoading && (
           <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-            <Loader className="w-5 h-5 text-blue-500 animate-spin" />
+            <Loader className="w-5 h-5 text-yellow-600 animate-spin" />
           </div>
         )}
       </div>

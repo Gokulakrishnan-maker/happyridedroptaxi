@@ -102,13 +102,13 @@ const Pricing: React.FC = () => {
               key={index}
               className={`relative rounded-2xl p-8 transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 ${
                 plan.popular 
-                  ? 'bg-gradient-to-br from-blue-50 to-emerald-50 border-2 border-blue-300 shadow-xl' 
-                  : 'bg-white border border-gray-200 shadow-lg'
+                  ? 'bg-gradient-to-br from-yellow-50 to-yellow-100 border-4 border-yellow-400 shadow-xl' 
+                  : 'bg-white border-2 border-yellow-300 shadow-lg'
               }`}
             >
               {plan.popular && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                  <span className="bg-gradient-to-r from-blue-600 to-emerald-600 text-white px-4 py-2 rounded-full text-sm font-semibold">
+                  <span className="bg-gradient-to-r from-black to-yellow-600 text-white px-4 py-2 rounded-full text-sm font-bold">
                     Most Popular
                   </span>
                 </div>
@@ -121,9 +121,9 @@ const Pricing: React.FC = () => {
                   className="w-72 h-72 mx-auto mb-4 object-contain transform transition-transform duration-300 hover:scale-105"
                  />   
                 <h3 className="text-2xl font-bold text-gray-800 mb-2">{plan.name}</h3>
-                <p className="text-gray-600 mb-4">{plan.description}</p>
-                <div className="text-4xl font-bold text-blue-600 mb-2">{plan.price}</div>
-                <p className="text-gray-500 text-sm">Per kilometer</p>
+                <p className="text-gray-700 mb-4 font-semibold">{plan.description}</p>
+                <div className="text-4xl font-bold text-black mb-2">{plan.price}</div>
+                <p className="text-gray-600 text-sm font-semibold">Per kilometer</p>
               </div>
 
               <ul className="space-y-4 mb-8">
@@ -146,8 +146,8 @@ const Pricing: React.FC = () => {
                 }}
                 className={`w-full py-4 rounded-lg font-semibold transition-all duration-300 ${
                   plan.popular
-                    ? 'bg-gradient-to-r from-blue-600 to-emerald-600 text-white hover:from-blue-700 hover:to-emerald-700 shadow-lg'
-                    : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                    ? 'bg-gradient-to-r from-yellow-400 to-yellow-500 text-black hover:from-yellow-500 hover:to-yellow-600 shadow-lg font-bold'
+                    : 'bg-yellow-100 text-black hover:bg-yellow-200 border-2 border-yellow-300 font-bold'
                 }`}
               >
                 Book {plan.name}

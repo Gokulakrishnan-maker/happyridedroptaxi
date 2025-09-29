@@ -53,9 +53,10 @@ const WhyChooseUs: React.FC = () => {
               <div 
                 key={index}
                 className="group p-8 rounded-xl bg-gradient-to-br from-gray-50 to-blue-50 hover:from-blue-50 hover:to-emerald-50 transition-all duration-300 hover:shadow-xl transform hover:-translate-y-2"
+                className="group p-8 rounded-xl bg-gradient-to-br from-yellow-50 to-gray-50 hover:from-yellow-100 hover:to-yellow-50 transition-all duration-300 hover:shadow-xl transform hover:-translate-y-2 border border-yellow-200"
               >
                 <div className="mb-6">
-                  <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-emerald-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-16 h-16 bg-gradient-to-r from-black to-yellow-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                     <IconComponent className="w-8 h-8 text-white" />
                   </div>
                 </div>
