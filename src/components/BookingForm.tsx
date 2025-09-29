@@ -4,6 +4,7 @@ import { MapPin, Calendar, Clock, Car, User, Phone, Send, AlertCircle, Navigatio
 import { BookingFormData, ValidationError, BookingResponse } from '../types/booking';
 import LocationInput from './LocationInput';
 import { useDistanceCalculation } from '../hooks/useDistanceCalculation';
+import AnalogTimePicker from './AnalogTimePicker';
 
 const BookingForm: React.FC = () => {
   const [formData, setFormData] = useState<BookingFormData>({
@@ -24,6 +25,7 @@ const BookingForm: React.FC = () => {
   const [dropCoords, setDropCoords] = useState<{lat: number; lng: number} | null>(null);
   const [calculatedDistance, setCalculatedDistance] = useState<number | null>(null);
   const [estimatedDuration, setEstimatedDuration] = useState<string>('');
+  const [showTimePicker, setShowTimePicker] = useState(false);
 
   const { calculateDistance, calculateHaversineDistance, isCalculating } = useDistanceCalculation();
 
@@ -314,14 +316,16 @@ const BookingForm: React.FC = () => {
                     <Clock className="inline w-4 h-4 mr-2" />
                     Time
                   </label>
-                  <input
-                    type="time"
+                  <button
+                    type="button"
+                    onClick={() => setShowTimePicker(true)}
                     value={formData.time}
-                    onChange={(e) => handleInputChange('time', e.target.value)}
-                    className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors ${
+                    className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors text-left ${
                       getFieldError('time') ? 'border-red-500' : 'border-gray-300'
                     }`}
-                  />
+                  >
+                    {formData.time || 'Select time'}
+                  </button>
                   {getFieldError('time') && (
                     <p className="text-red-500 text-sm mt-1">{getFieldError('time')}</p>
                   )}
@@ -416,6 +420,15 @@ const BookingForm: React.FC = () => {
               </button>
             </form>
           </div>
+
+          {/* Analog Time Picker Modal */}
+          {showTimePicker && (
+            <AnalogTimePicker
+              value={formData.time}
+              onChange={(time) => handleInputChange('time', time)}
+              onClose={() => setShowTimePicker(false)}
+            />
+          )}
         </div>
       </div>
     </section>
