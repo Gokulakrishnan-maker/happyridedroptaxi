@@ -132,12 +132,12 @@ const Footer: React.FC = () => {
         <div className="border-t border-gray-700 mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-300 text-sm mb-4 md:mb-0 font-semibold">
-              © 2024 Happy Ride Drop Taxi. All rights reserved.
+              © 2024 Happy Ride Drop Taxi. All rights reserved. Designed by Gk WebDesigns
             </p>
             <div className="flex space-x-6 text-sm">
               <a href="#" className="text-gray-300 hover:text-yellow-400 transition-colors font-semibold">Privacy Policy</a>
               <a href="#" className="text-gray-300 hover:text-yellow-400 transition-colors font-semibold">Terms of Service</a>
-              <a href="#" className="text-gray-300 hover:text-yellow-400 transition-colors font-semibold">Refund Policy</a>
+              <a href="#" className="text-gray-300 hover:text-yellow-400 transition-colors font-semibold">FAQ</a>
             </div>
           </div>
         </div>
