@@ -40,19 +40,24 @@ const LocationInput: React.FC<LocationInputProps> = ({
         );
 
         // Add place changed listener
-        autocompleteRef.current.addListener('place_changed', () => {
-          const place = autocompleteRef.current?.getPlace();
-          
-          if (place && place.formatted_address) {
-            const coordinates = place.geometry?.location ? {
-              lat: place.geometry.location.lat(),
-              lng: place.geometry.location.lng()
-            } : undefined;
+      autocompleteRef.current.addListener('place_changed', () => {
+  const place = autocompleteRef.current?.getPlace();
 
-            onChange(place.formatted_address, coordinates);
-            setIsLoading(false);
-          }
-        });
+  if (place && place.formatted_address) {
+    const coordinates = place.geometry?.location
+      ? {
+          lat: place.geometry.location.lat(),
+          lng: place.geometry.location.lng(),
+        }
+      : undefined;
+
+    onChange(place.formatted_address, coordinates);
+  }
+
+  // ✅ Always hide spinner
+  setIsLoading(false);
+});
+
 
       } catch (error) {
         console.error('Error initializing Google Maps Autocomplete:', error);
@@ -82,18 +87,21 @@ const LocationInput: React.FC<LocationInputProps> = ({
     };
   }, [onChange]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
-    onChange(newValue);
-    
-    if (newValue.length > 2) {
-      setIsLoading(true);
-    }
-  };
+const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const newValue = e.target.value;
+  onChange(newValue);
 
-  const handleFocus = () => {
+  if (newValue.length > 2) {
+    setIsLoading(true);
+
+    // ✅ Auto-hide spinner if nothing comes back
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+  } else {
     setIsLoading(false);
-  };
+  }
+};
 
   return (
     <div>
