@@ -205,7 +205,9 @@ const BookingForm: React.FC = () => {
 
           <div className="bg-white rounded-2xl shadow-2xl p-8 md:p-12 border-4 border-yellow-400">
             <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-6">
+              {/* Location Fields */}
+              <div className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-6">
                 {/* Pickup Location */}
                 <LocationInput
                   label="Pickup Location"
@@ -225,6 +227,56 @@ const BookingForm: React.FC = () => {
                   error={getFieldError('dropLocation')}
                   icon={<MapPin className="inline w-4 h-4 mr-2 text-emerald-600" />}
                 />
+                </div>
+              </div>
+
+              {/* Customer Details */}
+              <div className="bg-gradient-to-r from-yellow-50 to-yellow-100 p-6 rounded-xl border-2 border-yellow-300">
+                <h3 className="text-lg font-bold text-black mb-4 flex items-center">
+                  <User className="w-5 h-5 mr-2" />
+                  Customer Information
+                </h3>
+                <div className="grid md:grid-cols-2 gap-6">
+                  {/* Name */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      <User className="inline w-4 h-4 mr-2" />
+                      Full Name
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.name}
+                      onChange={(e) => handleInputChange('name', e.target.value)}
+                      placeholder="Enter your full name"
+                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors bg-white ${
+                        getFieldError('name') ? 'border-red-500' : 'border-gray-300'
+                      }`}
+                    />
+                    {getFieldError('name') && (
+                      <p className="text-red-500 text-sm mt-1">{getFieldError('name')}</p>
+                    )}
+                  </div>
+
+                  {/* Phone */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      <Phone className="inline w-4 h-4 mr-2" />
+                      Phone Number
+                    </label>
+                    <input
+                      type="tel"
+                      value={formData.phone}
+                      onChange={(e) => handleInputChange('phone', e.target.value)}
+                      placeholder="Enter your phone number"
+                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors bg-white ${
+                        getFieldError('phone') ? 'border-red-500' : 'border-gray-300'
+                      }`}
+                    />
+                    {getFieldError('phone') && (
+                      <p className="text-red-500 text-sm mt-1">{getFieldError('phone')}</p>
+                    )}
+                  </div>
+                </div>
               </div>
 
               {/* Distance Information */}
@@ -257,17 +309,23 @@ const BookingForm: React.FC = () => {
                 </div>
               )}
 
-              <div className="grid md:grid-cols-2 gap-6">
-
+              {/* Trip Details */}
+              <div className="bg-gradient-to-r from-gray-50 to-gray-100 p-6 rounded-xl border-2 border-gray-300">
+                <h3 className="text-lg font-bold text-black mb-4 flex items-center">
+                  <Car className="w-5 h-5 mr-2" />
+                  Trip Details
+                </h3>
+                <div className="grid md:grid-cols-2 gap-6">
                 {/* Trip Type */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    <Navigation className="inline w-4 h-4 mr-2" />
                     Trip Type
                   </label>
                   <select
                     value={formData.tripType}
                     onChange={(e) => handleInputChange('tripType', e.target.value as 'one-way' | 'round-trip')}
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors"
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors bg-white"
                   >
                     <option value="one-way">One-way (Min 130 km)</option>
                     <option value="round-trip">Round-trip (Min 250 km)</option>
@@ -287,9 +345,16 @@ const BookingForm: React.FC = () => {
                     components={{ Option: customOption, SingleValue: customSingleValue }}
                   />
                 </div>
+                </div>
+              </div>
 
-                {/* Date, Time, Name, Phone ... keep your current inputs */}
-                
+              {/* Schedule Details */}
+              <div className="bg-gradient-to-r from-blue-50 to-blue-100 p-6 rounded-xl border-2 border-blue-300">
+                <h3 className="text-lg font-bold text-black mb-4 flex items-center">
+                  <Calendar className="w-5 h-5 mr-2" />
+                  Schedule Information
+                </h3>
+                <div className="grid md:grid-cols-2 gap-6">
                 {/* Date */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -303,7 +368,7 @@ const BookingForm: React.FC = () => {
                     min={new Date().toISOString().split('T')[0]}
                     className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors ${
                       getFieldError('date') ? 'border-red-500' : 'border-gray-300'
-                    }`}
+                    } bg-white`}
                   />
                   {getFieldError('date') && (
                     <p className="text-red-500 text-sm mt-1">{getFieldError('date')}</p>
@@ -319,10 +384,9 @@ const BookingForm: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setShowTimePicker(true)}
-                    value={formData.time}
                     className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors text-left ${
                       getFieldError('time') ? 'border-red-500' : 'border-gray-300'
-                    }`}
+                    } bg-white`}
                   >
                     {formData.time || 'Select time'}
                   </button>
@@ -330,49 +394,7 @@ const BookingForm: React.FC = () => {
                     <p className="text-red-500 text-sm mt-1">{getFieldError('time')}</p>
                   )}
                 </div>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-6">
-                {/* Name */}
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    <User className="inline w-4 h-4 mr-2" />
-                    Full Name
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.name}
-                    onChange={(e) => handleInputChange('name', e.target.value)}
-                    placeholder="Enter your full name"
-                    className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors ${
-                      getFieldError('name') ? 'border-red-500' : 'border-gray-300'
-                    }`}
-                  />
-                  {getFieldError('name') && (
-                    <p className="text-red-500 text-sm mt-1">{getFieldError('name')}</p>
-                  )}
                 </div>
-
-                {/* Phone */}
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    <Phone className="inline w-4 h-4 mr-2" />
-                    Phone Number
-                  </label>
-                  <input
-                    type="tel"
-                    value={formData.phone}
-                    onChange={(e) => handleInputChange('phone', e.target.value)}
-                    placeholder="Enter your phone number"
-                    className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors ${
-                      getFieldError('phone') ? 'border-red-500' : 'border-gray-300'
-                    }`}
-                  />
-                  {getFieldError('phone') && (
-                    <p className="text-red-500 text-sm mt-1">{getFieldError('phone')}</p>
-                  )}
-                </div>
-
               </div>
 
               {/* Distance Error */}
@@ -418,7 +440,6 @@ const BookingForm: React.FC = () => {
                   </>
                 )}
               </button>
-            </div>
             </form>
           </div>
 
