@@ -154,18 +154,34 @@ app.get("/api/test", (req, res) => {
 });
 
 // ------------------ CATCH-ALL ------------------
-app.get("*", (req, res, next) => {
+app.get("*", (req, res) => {
   if (req.path.startsWith("/api")) return next();
 
   if (process.env.NODE_ENV === "production") {
     res.sendFile(join(__dirname, "dist", "index.html"));
   } else {
-    res.status(404).json({
-      success: false,
-      message: "Frontend served by Vite dev server, not Express",
-      path: req.path,
-    });
+    // In development, let Vite handle frontend routes
+    res.status(404).send(`
+      <html>
+        <body>
+          <h1>Backend Server Running</h1>
+          <p>API server is running on port ${PORT}</p>
+          <p>Frontend should be served by Vite on port 5173</p>
+          <p>Requested path: ${req.path}</p>
+          <p>If you're seeing this, the backend is working!</p>
+        </body>
+      </html>
+    `);
   }
+});
+
+// Handle API 404s
+app.use('/api/*', (req, res) => {
+  res.status(404).json({
+    success: false,
+    message: `API endpoint ${req.path} not found`,
+    availableEndpoints: ['/api/book', '/api/health', '/api/test']
+  });
 });
 
 // ------------------ ERROR HANDLER ------------------

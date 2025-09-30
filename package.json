@@ -5,13 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:full": "npm run server & wait-on tcp:3001 && npm run dev",
+    "dev:full": "concurrently \"npm run server\" \"wait-on tcp:3001 && npm run dev\"",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit -p tsconfig.app.json",
     "server": "node server.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev:server": "nodemon server.js"
   },
   "dependencies": {
     "@googlemaps/js-api-loader": "^1.16.10",
