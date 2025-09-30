@@ -103,24 +103,18 @@ const BookingForm: React.FC = () => {
 
       console.log('Submitting booking:', bookingData);
 
-      const apiBaseUrl = 'http://localhost:3001';
-      const response = await fetch(`${apiBaseUrl}/api/book`, {
+      const response = await fetch('/api/book', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json',
         },
-        mode: 'cors',
-        credentials: 'same-origin',
-        mode: 'cors',
         body: JSON.stringify(bookingData),
       });
 
       console.log('Response status:', response.status);
       
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const result = await response.json();
@@ -158,11 +152,7 @@ const BookingForm: React.FC = () => {
       
     } catch (error) {
       console.error('Booking submission error:', error);
-      if (error.name === 'TypeError' && error.message.includes('fetch')) {
-        setSubmitMessage(`❌ Connection error: Unable to connect to server. Please ensure the backend is running on port 3001.`);
-      } else {
-        setSubmitMessage(`❌ Network error: ${error.message}. Please check your connection and try again.`);
-      }
+      setSubmitMessage(`❌ Network error: ${error.message}. Please check your connection and try again.`);
     } finally {
       setIsLoading(false);
     }
