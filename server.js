@@ -428,16 +428,27 @@ app.get('/api/test', (req, res) => {
   res.json({ message: 'Backend server is working!', timestamp: new Date().toISOString() });
 });
 
+// Handle non-API routes in development
+app.get('*', (req, res) => {
+  // Only serve static files in production
+  if (process.env.NODE_ENV === 'production') {
+    console.log(`🌐 Serving React app for: ${req.path}`);
+    res.sendFile(join(__dirname, 'dist', 'index.html'));
+  } else {
+    console.log(`🔄 Development mode - Frontend served by Vite: ${req.path}`);
+    res.status(404).json({
+      success: false,
+      message: 'API endpoint not found. Frontend is served by Vite dev server.',
+      path: req.path,
+      method: req.method
+    });
+  }
+});
+
 // Log all incoming requests for debugging
 app.use((req, res, next) => {
   console.log(`📡 ${req.method} ${req.path} - ${new Date().toISOString()}`);
   next();
-});
-
-// Serve React app for all other routes
-app.get('*', (req, res) => {
-  console.log(`🌐 Serving React app for: ${req.path}`);
-  res.sendFile(join(__dirname, 'dist', 'index.html'));
 });
 
 // Error handling middleware
