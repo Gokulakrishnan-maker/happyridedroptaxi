@@ -8,6 +8,7 @@ interface LocationInputProps {
   placeholder: string;
   error?: string;
   icon?: React.ReactNode;
+  id?: string; // Add unique identifier
 }
 
 const LocationInput: React.FC<LocationInputProps> = ({
@@ -16,7 +17,8 @@ const LocationInput: React.FC<LocationInputProps> = ({
   onChange,
   placeholder,
   error,
-  icon = <MapPin className="inline w-4 h-4 mr-2" />
+  icon = <MapPin className="inline w-4 h-4 mr-2" />,
+  id = Math.random().toString(36).substr(2, 9) // Generate unique ID if not provided
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
@@ -24,6 +26,7 @@ const LocationInput: React.FC<LocationInputProps> = ({
   const [isInitialized, setIsInitialized] = useState(false);
   const [initError, setInitError] = useState<string | null>(null);
   const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isUpdatingRef = useRef(false); // Prevent recursive updates
 
   useEffect(() => {
     const initializeAutocomplete = () => {
@@ -36,6 +39,7 @@ const LocationInput: React.FC<LocationInputProps> = ({
         // Clear any existing autocomplete
         if (autocompleteRef.current) {
           window.google?.maps?.event?.clearInstanceListeners(autocompleteRef.current);
+          autocompleteRef.current = null;
         }
 
         // Create autocomplete instance
@@ -59,10 +63,13 @@ const LocationInput: React.FC<LocationInputProps> = ({
         autocompleteRef.current.setOptions({ sessionToken });
 
         // Add place changed listener
-        autocompleteRef.current.addListener('place_changed', () => {
+        const placeChangedListener = () => {
+          if (isUpdatingRef.current) return; // Prevent recursive calls
+          
           const place = autocompleteRef.current?.getPlace();
           
           if (place && place.formatted_address) {
+            isUpdatingRef.current = true;
             const coordinates = place.geometry?.location ? {
               lat: place.geometry.location.lat(),
               lng: place.geometry.location.lng()
@@ -70,8 +77,15 @@ const LocationInput: React.FC<LocationInputProps> = ({
 
             onChange(place.formatted_address, coordinates);
             setIsLoading(false);
+            
+            // Reset the flag after a short delay
+            setTimeout(() => {
+              isUpdatingRef.current = false;
+            }, 100);
           }
-        });
+        };
+        
+        autocompleteRef.current.addListener('place_changed', placeChangedListener);
 
         setIsInitialized(true);
         setInitError(null);
@@ -102,14 +116,25 @@ const LocationInput: React.FC<LocationInputProps> = ({
     return () => {
       if (autocompleteRef.current) {
         window.google?.maps?.event?.clearInstanceListeners(autocompleteRef.current);
+        autocompleteRef.current = null;
       }
       if (debounceTimeoutRef.current) {
         clearTimeout(debounceTimeoutRef.current);
       }
+      isUpdatingRef.current = false;
     };
-  }, [onChange]);
+  }, [onChange, id]); // Add id to dependencies
+
+  // Sync external value changes with input
+  useEffect(() => {
+    if (inputRef.current && inputRef.current.value !== value && !isUpdatingRef.current) {
+      inputRef.current.value = value;
+    }
+  }, [value]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (isUpdatingRef.current) return; // Prevent interference
+    
     const newValue = e.target.value;
     onChange(newValue);
     
@@ -129,9 +154,11 @@ const LocationInput: React.FC<LocationInputProps> = ({
   };
 
   const handleFocus = () => {
+    if (isUpdatingRef.current) return;
+    
     setIsLoading(false);
     // Pre-warm the autocomplete service
-    if (autocompleteRef.current && !value) {
+    if (autocompleteRef.current && !value && window.google?.maps?.places) {
       // Trigger a small bounds search to warm up the service
       const service = new window.google.maps.places.AutocompleteService();
       service.getPlacePredictions({
@@ -160,6 +187,7 @@ const LocationInput: React.FC<LocationInputProps> = ({
       <div className="relative">
         <input
           ref={inputRef}
+          id={`location-input-${id}`}
           type="text"
           value={value}
           onChange={handleInputChange}
