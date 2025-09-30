@@ -1,7 +1,6 @@
 import express from "express";
 import cors from "cors";
 import nodemailer from "nodemailer";
-import fetch from "node-fetch"; // needed if Node < 18
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import { config } from "dotenv";
