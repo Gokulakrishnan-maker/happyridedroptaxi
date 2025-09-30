@@ -23,15 +23,17 @@ export default defineConfig({
         timeout: 30000,
         proxyTimeout: 30000,
         ws: false,
+        rewrite: (path) => path, // Don't rewrite the path
         configure: (proxy, _options) => {
           proxy.on('error', (err, _req, _res) => {
-            console.log('Proxy error:', err.message);
+            console.error('❌ Proxy error:', err.message);
+            console.error('Make sure backend server is running on port 3001');
           });
           proxy.on('proxyReq', (proxyReq, req, _res) => {
-            console.log(`Proxying ${req.method} ${req.url} to backend`);
+            console.log(`🔄 Proxying ${req.method} ${req.url} to http://localhost:3001`);
           });
           proxy.on('proxyRes', (proxyRes, req, _res) => {
-            console.log(`Backend responded ${proxyRes.statusCode} for ${req.url}`);
+            console.log(`✅ Backend responded ${proxyRes.statusCode} for ${req.url}`);
           });
         },
       }

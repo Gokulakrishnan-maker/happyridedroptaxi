@@ -154,7 +154,7 @@ app.get("/api/test", (req, res) => {
 });
 
 // ------------------ CATCH-ALL ------------------
-app.get("*", (req, res) => {
+app.get("*", (req, res, next) => {
   if (req.path.startsWith("/api")) return next();
 
   if (process.env.NODE_ENV === "production") {
@@ -169,6 +169,12 @@ app.get("*", (req, res) => {
           <p>Frontend should be served by Vite on port 5173</p>
           <p>Requested path: ${req.path}</p>
           <p>If you're seeing this, the backend is working!</p>
+          <p>Available API endpoints:</p>
+          <ul>
+            <li>POST /api/book - Submit booking</li>
+            <li>GET /api/health - Health check</li>
+            <li>GET /api/test - Test endpoint</li>
+          </ul>
         </body>
       </html>
     `);

@@ -103,11 +103,8 @@ const BookingForm: React.FC = () => {
 
     console.log("Submitting booking:", bookingData);
 
-    // Determine API base URL
-    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 
-      (window.location.hostname === 'localhost' ? 'http://localhost:3001' : '');
-
-    const apiUrl = apiBaseUrl ? `${apiBaseUrl}/api/book` : '/api/book';
+    // Always use relative URL in development to leverage Vite proxy
+    const apiUrl = '/api/book';
     
     console.log("API URL:", apiUrl);
 
@@ -115,13 +112,21 @@ const BookingForm: React.FC = () => {
       method: "POST",
       headers: { 
         "Content-Type": "application/json",
-        "Accept": "application/json"
+        "Accept": "application/json",
+        "X-Requested-With": "XMLHttpRequest"
       },
+      credentials: 'same-origin',
       body: JSON.stringify(bookingData),
     });
 
     console.log("Response status:", response.status);
     console.log("Response headers:", Object.fromEntries(response.headers.entries()));
+
+    // Check if response is HTML (404 page) instead of JSON
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('text/html')) {
+      throw new Error(`Server returned HTML instead of JSON. This usually means the backend server is not running or API routes are not accessible. Status: ${response.status}`);
+    }
 
     if (!response.ok) {
       const errorText = await response.text();
