@@ -45,24 +45,7 @@ const createTransporter = () => {
 
 // Test email configuration on startup
 const testEmailConfig = async () => {
-  // Skip email test if not configured to prevent server startup issues
-  if (!process.env.GMAIL_PASS || 
-      process.env.GMAIL_PASS === 'your-app-password' || 
-      process.env.GMAIL_PASS === 'your-gmail-app-password') {
-    console.log('📧 Email not configured - skipping email test');
-    return;
-  }
-
-  try {
-    const transporter = createTransporter();
-    await Promise.race([
-      transporter.verify(),
-      new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 5000))
-    ]);
-    console.log('✅ Email configuration verified successfully');
-  } catch (error) {
-    console.warn('⚠️ Email configuration warning:', error.message);
-  }
+  console.log('📧 Email testing disabled for faster startup');
 };
 
 // Test email config on startup
@@ -100,51 +83,66 @@ const sendTelegramMessage = async (chatId, message) => {
 
 // Validation functions
 const validateBookingData = (data) => {
+  console.log('🔍 Validating booking data:', JSON.stringify(data, null, 2));
+  
   const errors = [];
   
   // Check if data exists
   if (!data || typeof data !== 'object') {
+    console.log('❌ Invalid data format');
     errors.push({ field: 'general', message: 'Invalid booking data format' });
     return { errors, distance: 0 };
   }
   
   if (!data.pickupLocation?.trim()) {
+    console.log('❌ Missing pickup location');
     errors.push({ field: 'pickupLocation', message: 'Pickup location is required' });
   }
   
   if (!data.dropLocation?.trim()) {
+    console.log('❌ Missing drop location');
     errors.push({ field: 'dropLocation', message: 'Drop location is required' });
   }
   
   if (!data.date) {
+    console.log('❌ Missing date');
     errors.push({ field: 'date', message: 'Date is required' });
   }
   
   if (!data.time) {
+    console.log('❌ Missing time');
     errors.push({ field: 'time', message: 'Time is required' });
   }
   
   if (!data.name?.trim()) {
+    console.log('❌ Missing name');
     errors.push({ field: 'name', message: 'Name is required' });
   }
   
   if (!data.phone?.trim()) {
+    console.log('❌ Missing phone');
     errors.push({ field: 'phone', message: 'Phone number is required' });
   } else if (!/^\+?[\d\s-()]{10,}$/.test(data.phone)) {
+    console.log('❌ Invalid phone format');
     errors.push({ field: 'phone', message: 'Please enter a valid phone number' });
   }
 
   // Simulate distance validation (in real app, integrate with mapping service)
+    console.log('❌ Invalid email format');
   const actualDistance = data.distance || data.calculatedDistance || Math.floor(Math.random() * 300) + 130;
+  console.log('📏 Calculated distance:', actualDistance);
   
   if (data.tripType === 'one-way' && actualDistance < 130) {
+    console.log('❌ Distance too short for one-way');
     errors.push({ field: 'distance', message: 'One-way trips require minimum 130 km distance' });
   }
   
   if (data.tripType === 'round-trip' && actualDistance < 250) {
+    console.log('❌ Distance too short for round-trip');
     errors.push({ field: 'distance', message: 'Round-trip bookings require minimum 250 km distance' });
   }
   
+  console.log('✅ Validation complete. Errors:', errors.length);
   return { errors, distance: actualDistance };
 };
 
@@ -319,6 +317,9 @@ const calculateEstimatedPrice = (carType, distance, tripType) => {
 // API Routes
 app.post('/api/book', async (req, res) => {
   console.log('📝 POST /api/book - Booking request received');
+  console.log('📋 Request headers:', JSON.stringify(req.headers, null, 2));
+  console.log('📋 Request body type:', typeof req.body);
+  console.log('📋 Request body:', JSON.stringify(req.body, null, 2));
   
   try {
     // Add request validation
@@ -330,11 +331,10 @@ app.post('/api/book', async (req, res) => {
       });
     }
 
-    console.log('Request body:', JSON.stringify(req.body, null, 2));
-    
     const bookingData = req.body;
     
     // Validate booking data
+    console.log('🔍 Starting validation...');
     const { errors, distance } = validateBookingData(bookingData);
     
     if (errors.length > 0) {
@@ -346,6 +346,7 @@ app.post('/api/book', async (req, res) => {
       });
     }
 
+    console.log('✅ Validation passed, generating notifications...');
     // Generate notification messages
     const { bookingId, adminMessage, customerMessage, estimatedPrice } = generateNotificationMessages(bookingData, distance);
     console.log('✅ Booking ID generated:', bookingId);
@@ -356,15 +357,16 @@ app.post('/api/book', async (req, res) => {
     let emailResults = { admin: false, customer: false };
     let telegramResult = false;
 
-    // Send emails with error handling
-    // Email sending temporarily disabled to prevent SMTP timeout errors
+    // Email sending disabled to prevent SMTP timeout errors
     console.log('📧 Email sending disabled - booking will proceed without email notifications');
     emailResults.admin = false;
     emailResults.customer = false;
 
     // Send Telegram notification
+    console.log('📱 Attempting Telegram notification...');
     try {
       await sendTelegramMessage(TELEGRAM_ADMIN_CHAT_ID, adminMessage);
+      console.log('✅ Telegram notification sent');
       telegramResult = true;
     } catch (telegramError) {
       console.error('❌ Telegram error:', telegramError);
@@ -372,6 +374,7 @@ app.post('/api/book', async (req, res) => {
     }
 
     // Generate WhatsApp and Telegram sharing links
+    console.log('🔗 Generating sharing links...');
     const adminWhatsAppMessage = encodeURIComponent(adminMessage);
     const customerWhatsAppMessage = encodeURIComponent(customerMessage);
     const adminTelegramMessage = encodeURIComponent(adminMessage);
@@ -383,6 +386,7 @@ app.post('/api/book', async (req, res) => {
       telegramResult
     });
 
+    console.log('📤 Sending success response...');
     res.json({
       success: true,
       message: `Booking request submitted successfully! Booking ID: ${bookingId}. We will contact you shortly.`,
@@ -408,9 +412,12 @@ app.post('/api/book', async (req, res) => {
   } catch (error) {
     console.error('❌ Booking error:', error);
     console.error('Error stack:', error.stack);
+    console.error('Error name:', error.name);
+    console.error('Error message:', error.message);
+    
     res.status(500).json({
       success: false,
-      message: 'Internal server error. Please try again later.',
+      message: `Internal server error: ${error.message}. Please try again later.`,
       error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
@@ -442,10 +449,11 @@ app.get('*', (req, res) => {
 
 // Error handling middleware
 app.use((error, req, res, next) => {
-  console.error('Server error:', error);
+  console.error('❌ Server middleware error:', error);
+  console.error('Error stack:', error.stack);
   res.status(500).json({
     success: false,
-    message: 'Internal server error'
+    message: `Server error: ${error.message}`
   });
 });
 
@@ -453,4 +461,7 @@ app.listen(PORT, () => {
   console.log(`🚀 Server is running on port ${PORT}`);
   console.log(`📡 API endpoint: http://localhost:${PORT}/api/book`);
   console.log(`🌐 Frontend should connect to: http://localhost:${PORT}`);
+  console.log(`🔧 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`📧 Gmail configured: ${process.env.GMAIL_PASS ? 'Yes' : 'No'}`);
+  console.log(`📱 Telegram configured: ${TELEGRAM_BOT_TOKEN ? 'Yes' : 'No'}`);
 });
