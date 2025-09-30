@@ -104,27 +104,30 @@ const BookingForm: React.FC = () => {
       console.log('Submitting booking:', bookingData);
 
       // Try direct connection first, fallback to proxy
-      let response;
-      try {
-        response = await fetch('http://localhost:3001/api/book', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
-          body: JSON.stringify(bookingData),
-        });
-      } catch (directError) {
-        console.log('Direct connection failed, trying proxy...');
-        response = await fetch('/api/book', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
-          body: JSON.stringify(bookingData),
-        });
+      // Test backend connection first
+      console.log('Testing backend connection...');
+      const testResponse = await fetch('/api/test', {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+        },
+      });
+      
+      if (!testResponse.ok) {
+        throw new Error(`Backend test failed: ${testResponse.status}`);
       }
+      
+      console.log('Backend connection test successful');
+      
+      // Submit booking
+      const response = await fetch('/api/book', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bookingData),
+      });
 
       if (!response) {
         throw new Error('No response received from server');
