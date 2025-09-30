@@ -103,21 +103,34 @@ const BookingForm: React.FC = () => {
 
     console.log("Submitting booking:", bookingData);
 
-    // 👇 Injected API call logic directly here
-    const apiBaseUrl =
-      import.meta.env.VITE_API_BASE_URL || "http://localhost:3001";
+    // Determine API base URL
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 
+      (window.location.hostname === 'localhost' ? 'http://localhost:3001' : '');
 
-    const response = await fetch(`${apiBaseUrl}/api/book`, {
+    const apiUrl = apiBaseUrl ? `${apiBaseUrl}/api/book` : '/api/book';
+    
+    console.log("API URL:", apiUrl);
+
+    const response = await fetch(apiUrl, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
       body: JSON.stringify(bookingData),
     });
 
+    console.log("Response status:", response.status);
+    console.log("Response headers:", Object.fromEntries(response.headers.entries()));
+
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const errorText = await response.text();
+      console.error("Response error:", errorText);
+      throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
     }
 
     const result = await response.json();
+    console.log("API Response:", result);
 
     if (result.success) {
       setSubmitMessage(

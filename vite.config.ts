@@ -14,6 +14,7 @@ export default defineConfig({
   server: {
     port: 5173,
     host: true,
+    strictPort: true,
     proxy: {
       '/api': {
         target: 'http://localhost:3001',
@@ -21,16 +22,16 @@ export default defineConfig({
         secure: false,
         timeout: 30000,
         proxyTimeout: 30000,
-        rewrite: (path) => path,
+        ws: false,
         configure: (proxy, _options) => {
           proxy.on('error', (err, _req, _res) => {
-            console.log('proxy error', err);
+            console.log('Proxy error:', err.message);
           });
           proxy.on('proxyReq', (proxyReq, req, _res) => {
-            console.log('Sending Request to the Target:', req.method, req.url);
+            console.log(`Proxying ${req.method} ${req.url} to backend`);
           });
           proxy.on('proxyRes', (proxyRes, req, _res) => {
-            console.log('Received Response from the Target:', proxyRes.statusCode, req.url);
+            console.log(`Backend responded ${proxyRes.statusCode} for ${req.url}`);
           });
         },
       }
