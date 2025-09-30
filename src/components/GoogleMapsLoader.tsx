@@ -31,7 +31,7 @@ const GoogleMapsLoader: React.FC<GoogleMapsLoaderProps> = ({ children }) => {
       return;
     }
 
-    const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+    const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || 'AIzaSyDliN_7olCSHuyWpsu05NhRQ5BI98aIngM';
     
     if (!apiKey) {
       setError('Google Maps API key not configured');
