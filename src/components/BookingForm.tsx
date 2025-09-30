@@ -121,15 +121,25 @@ const BookingForm: React.FC = () => {
     console.log("Response headers:", Object.fromEntries(response.headers.entries()));
 
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error("Response error:", errorText);
+      let errorMessage = `HTTP error! status: ${response.status}`;
       
-      // Check if we got HTML instead of JSON (server not running)
-      if (errorText.includes('<!DOCTYPE html>')) {
-        throw new Error(`Cannot connect to backend server. Please ensure the server is running.`);
+      try {
+        const errorData = await response.json();
+        errorMessage = errorData.message || errorMessage;
+        console.error("Server error response:", errorData);
+      } catch (parseError) {
+        const errorText = await response.text();
+        console.error("Response error:", errorText);
+        
+        // Check if we got HTML instead of JSON (server not running)
+        if (errorText.includes('<!DOCTYPE html>')) {
+          throw new Error(`Cannot connect to backend server. Please ensure the server is running.`);
+        }
+        
+        errorMessage = `${errorMessage}, response: ${errorText}`;
       }
       
-      throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+      throw new Error(errorMessage);
     }
 
     const result = await response.json();

@@ -29,7 +29,6 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use((req, res, next) => {
   const timestamp = new Date().toISOString();
   console.log(`📝 ${req.method} ${req.path} - ${timestamp}`);
-  console.log(`   Headers:`, JSON.stringify(req.headers, null, 2));
   if (req.body && Object.keys(req.body).length > 0) {
     console.log(`   Body:`, JSON.stringify(req.body, null, 2));
   }
@@ -58,7 +57,7 @@ app.get('/api/test', (req, res) => {
   });
 });
 
-// Price estimation endpoint (renamed from booking)
+// Price estimation endpoint
 app.post('/api/estimate', (req, res) => {
   console.log('💰 Price estimation request received');
   console.log('Request body:', JSON.stringify(req.body, null, 2));
