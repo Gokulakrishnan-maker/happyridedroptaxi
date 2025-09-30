@@ -104,7 +104,7 @@ const BookingForm: React.FC = () => {
     console.log("Submitting booking:", bookingData);
 
     // Use relative URL to leverage Vite proxy
-    const apiUrl = '/api/book';
+    const apiUrl = '/api/estimate';
     
     console.log("API URL:", apiUrl);
 
@@ -145,8 +145,7 @@ const BookingForm: React.FC = () => {
           window.open(result.data.whatsappLinks.customer, '_blank');
         }, 2000);
       }
-      // Try backend server first, then fallback to proxy
-      let apiUrl = 'http://localhost:3001/api/book';
+      
       setFormData({
         pickupLocation: "",
         dropLocation: "",
