@@ -104,7 +104,7 @@ const BookingForm: React.FC = () => {
       console.log('Submitting booking:', bookingData);
 
       // Submit booking
-      const apiUrl = '/api/book';
+      const apiUrl = import.meta.env.DEV ? '/api/book' : `${window.location.origin}/api/book`;
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
