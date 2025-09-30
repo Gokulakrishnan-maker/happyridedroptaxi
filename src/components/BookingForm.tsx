@@ -139,8 +139,11 @@ const BookingForm: React.FC = () => {
 
       if (result.data.whatsappLinks?.customer) {
         setTimeout(() => {
-      // Always use proxy in development
-      const apiUrl = '/api/book';
+          window.open(result.data.whatsappLinks.customer, '_blank');
+        }, 2000);
+      }
+
+      // Reset form
       setFormData({
         pickupLocation: "",
         dropLocation: "",
@@ -148,9 +151,8 @@ const BookingForm: React.FC = () => {
         date: "",
         time: "",
         carType: "sedan",
-          "Accept": "application/json",
+        name: "",
         phone: "",
-        credentials: 'same-origin',
         email: "",
       });
       setCalculatedDistance(null);
@@ -209,33 +211,12 @@ const BookingForm: React.FC = () => {
           setCalculatedDistance(distance.distance);
           setEstimatedDuration(distance.duration);
         }
-      
-      // Check if response is HTML (404 page)
-      const contentType = response.headers.get('content-type');
-      if (contentType && contentType.includes('text/html')) {
-        const htmlText = await response.text();
-        console.error("Received HTML instead of JSON:", htmlText.substring(0, 200));
-        throw new Error(`Server returned HTML page instead of API response. Status: ${response.status}`);
-      }
+      } catch (error) {
         console.error('Error calculating distance:', error);
         // Fallback to Haversine calculation
-        let errorMessage;
-        try {
-          const errorData = await response.json();
-          errorMessage = errorData.message || 'Unknown error';
-        } catch {
-          const errorText = await response.text();
-      
-      if (error.message.includes('HTML page instead of API')) {
-        setSubmitMessage(
-          `❌ Server error: Backend API not responding correctly. Please try again or contact support.`
-        );
-      } else {
-        setSubmitMessage(
-          `❌ Network error: ${error.message}. Please check your connection and try again.`
-        );
-      }
-        throw new Error(`HTTP error! status: ${response.status}, message: ${errorMessage}`);
+        const haversineDistance = calculateHaversineDistance(updatedPickupCoords, updatedDropCoords);
+        setCalculatedDistance(Math.round(haversineDistance));
+        setEstimatedDuration('Estimated');
       }
     }
   };
