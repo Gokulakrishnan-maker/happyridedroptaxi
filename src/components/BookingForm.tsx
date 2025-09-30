@@ -104,30 +104,27 @@ const BookingForm: React.FC = () => {
       console.log('Submitting booking:', bookingData);
 
       // Try direct connection first, fallback to proxy
-      // Test backend connection first
-      console.log('Testing backend connection...');
-      const testResponse = await fetch('/api/test', {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-        },
-      });
-      
-      if (!testResponse.ok) {
-        throw new Error(`Backend test failed: ${testResponse.status}`);
+      let response;
+      try {
+        response = await fetch('http://localhost:3001/api/book', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: JSON.stringify(bookingData),
+        });
+      } catch (directError) {
+        console.log('Direct connection failed, trying proxy...');
+        response = await fetch('/api/book', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: JSON.stringify(bookingData),
+        });
       }
-      
-      console.log('Backend connection test successful');
-      
-      // Submit booking
-      const response = await fetch('/api/book', {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(bookingData),
-      });
 
       if (!response) {
         throw new Error('No response received from server');
@@ -138,21 +135,6 @@ const BookingForm: React.FC = () => {
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
-      }
-
-      const result = await response.json();
-      console.log('Response data:', result);
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(bookingData),
-      });
-
-      console.log('Response status:', response.status);
-        const errorText = await response.text().catch(() => 'No error details available');
-        console.error('Response error:', response.status, errorText);
-        throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
       }
 
       const result = await response.json();
@@ -191,6 +173,10 @@ const BookingForm: React.FC = () => {
     } catch (error) {
       console.error('Booking submission error:', error);
       setSubmitMessage(`❌ Network error: ${error.message}. Please check your connection and try again.`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleInputChange = (field: keyof BookingFormData, value: string) => {
     setFormData(prev => ({
