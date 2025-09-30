@@ -26,8 +26,8 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(express.static('dist'));
 
 // Telegram Bot Configuration
-const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '8275666233:AAGEPTLZUWgzQt6-LUyQidHV-QOG4Q5dMM0';
-const TELEGRAM_ADMIN_CHAT_ID = process.env.TELEGRAM_ADMIN_CHAT_ID || '8486626603 ';
+const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
+const TELEGRAM_ADMIN_CHAT_ID = process.env.TELEGRAM_ADMIN_CHAT_ID || '';
 const TELEGRAM_API_URL = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}`;
 
 // Email configuration
@@ -38,7 +38,7 @@ const createTransporter = () => {
     secure: true,
     auth: {
       user: process.env.GMAIL_USER || 'happyridedroptaxi@gmail.com',
-      pass: process.env.GMAIL_PASS || 'nfiapqiwwtpgnmey' // Use App Password for Gmail
+      pass: process.env.GMAIL_PASS || 'your-app-password' // Use App Password for Gmail
     }
   });
 };
