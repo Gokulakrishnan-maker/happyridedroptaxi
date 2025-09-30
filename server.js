@@ -32,7 +32,9 @@ const TELEGRAM_API_URL = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}`;
 // Email configuration
 const createTransporter = () => {
   return nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
     auth: {
       user: process.env.GMAIL_USER || 'happyridedroptaxi@gmail.com',
       pass: process.env.GMAIL_PASS || 'your-app-password' // Use App Password for Gmail
