@@ -219,7 +219,7 @@ const BookingForm: React.FC = () => {
                   <div className="grid md:grid-cols-2 gap-6">
                   {/* Pickup Location */}
                   <LocationInput
-                    id="pickup-location"
+                    id="pickup"
                     label="Pickup Location"
                     value={formData.pickupLocation}
                     onChange={(value, coords) => handleLocationChange('pickupLocation', value, coords)}
@@ -230,7 +230,7 @@ const BookingForm: React.FC = () => {
 
                   {/* Drop Location */}
                   <LocationInput
-                    id="drop-location"
+                    id="drop"
                     label="Drop Location"
                     value={formData.dropLocation}
                     onChange={(value, coords) => handleLocationChange('dropLocation', value, coords)}
