@@ -17,7 +17,9 @@ const PORT = process.env.PORT || 3001;
 // Middleware
 app.use(cors({
   origin: ['http://localhost:5173', 'http://localhost:3001', 'https://happyridedroptaxi.com'],
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
 }));
 app.use(express.json());
 app.use(express.static('dist'));
@@ -430,5 +432,7 @@ app.use((error, req, res, next) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`🚀 Server is running on port ${PORT}`);
+  console.log(`📡 API endpoint: http://localhost:${PORT}/api/book`);
+  console.log(`🌐 Frontend should connect to: http://localhost:${PORT}`);
 });
