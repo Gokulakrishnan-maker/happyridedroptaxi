@@ -4,6 +4,7 @@ import nodemailer from 'nodemailer';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { config } from 'dotenv';
+import { existsSync } from 'fs';
 
 // ES module equivalent of __dirname
 const __filename = fileURLToPath(import.meta.url);
@@ -25,9 +26,6 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Only serve static files in production
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static('dist'));
-}
 // Telegram Bot Configuration
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '8275666233:AAGEPTLZUWgzQt6-LUyQidHV-QOG4Q5dMM0';
 const TELEGRAM_ADMIN_CHAT_ID = process.env.TELEGRAM_ADMIN_CHAT_ID || '8486626603 ';
@@ -445,19 +443,34 @@ app.use((req, res, next) => {
 });
 
 // Serve React app for all other routes (only in production)
-if (process.env.NODE_ENV === 'production') {
+// Check if dist directory exists before serving static files
+const distPath = join(__dirname, 'dist');
+const indexPath = join(distPath, 'index.html');
+
+if (process.env.NODE_ENV === 'production' && existsSync(distPath) && existsSync(indexPath)) {
+  console.log('✅ Production mode: Serving static files from dist directory');
+  app.use(express.static('dist'));
+  
   app.get('*', (req, res) => {
     console.log(`🌐 Serving React app for: ${req.path}`);
-    res.sendFile(join(__dirname, 'dist', 'index.html'));
+    res.sendFile(indexPath);
   });
 } else {
-  // In development, only handle API routes
+  // In development or when dist doesn't exist, only handle API routes
   app.get('*', (req, res) => {
-    console.log(`🔧 Development mode: API-only server for: ${req.path}`);
-    res.status(404).json({ 
-      success: false, 
-      message: 'API endpoint not found. Frontend is served by Vite dev server.' 
-    });
+    if (process.env.NODE_ENV === 'production') {
+      console.log(`❌ Production mode but dist directory not found. Run 'npm run build' first.`);
+      res.status(500).json({ 
+        success: false, 
+        message: 'Application not built. Please run "npm run build" first.' 
+      });
+    } else {
+      console.log(`🔧 Development mode: API-only server for: ${req.path}`);
+      res.status(404).json({ 
+        success: false, 
+        message: 'API endpoint not found. Frontend is served by Vite dev server.' 
+      });
+    }
   });
 }
 
