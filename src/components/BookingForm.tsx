@@ -78,93 +78,89 @@ const BookingForm: React.FC = () => {
     return newErrors;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    const validationErrors = validateForm();
-    setErrors(validationErrors);
-    
-    if (validationErrors.length > 0) {
-      setSubmitMessage('Please fix the errors above and try again.');
-      return;
+ const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  const validationErrors = validateForm();
+  setErrors(validationErrors);
+
+  if (validationErrors.length > 0) {
+    setSubmitMessage("Please fix the errors above and try again.");
+    return;
+  }
+
+  setIsLoading(true);
+  setSubmitMessage("");
+
+  try {
+    const bookingData = {
+      ...formData,
+      distance: calculatedDistance,
+      estimatedDuration,
+      pickupCoordinates: pickupCoords,
+      dropCoordinates: dropCoords,
+    };
+
+    console.log("Submitting booking:", bookingData);
+
+    // 👇 Injected API call logic directly here
+    const apiBaseUrl =
+      import.meta.env.VITE_API_BASE_URL || "http://localhost:3001";
+
+    const response = await fetch(`${apiBaseUrl}/api/book`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(bookingData),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    setIsLoading(true);
-    setSubmitMessage('');
+    const result = await response.json();
 
-    try {
-      const bookingData = {
-        ...formData,
-        distance: calculatedDistance,
-        estimatedDuration,
-        pickupCoordinates: pickupCoords,
-        dropCoordinates: dropCoords
-      };
+    if (result.success) {
+      setSubmitMessage(
+        `✅ Booking submitted successfully! Booking ID: ${result.data.bookingId}. We will contact you shortly.`
+      );
 
-      console.log('Submitting booking:', bookingData);
+      if (result.data.whatsappLinks?.customer) {
+        setTimeout(() => {
+          window.open(result.data.whatsappLinks.customer, "_blank");
+        }, 2000);
+      }
 
-      // Submit booking
-      const apiUrl = import.meta.env.DEV ? '/api/book' : `${window.location.origin}/api/book`;
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(bookingData),
+      // Reset form after successful submit
+      setFormData({
+        pickupLocation: "",
+        dropLocation: "",
+        tripType: "one-way",
+        date: "",
+        time: "",
+        carType: "sedan",
+        name: "",
+        phone: "",
+        email: "",
       });
-
-      if (!response) {
-        throw new Error('No response received from server');
-      }
-
-      console.log('Response status:', response.status);
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
-      }
-
-      const result = await response.json();
-      console.log('Response data:', result);
-
-      if (result.success) {
-        setSubmitMessage(`✅ Booking submitted successfully! Booking ID: ${result.data.bookingId}. We will contact you shortly.`);
-        
-        // Auto-open WhatsApp for customer
-        if (result.data.whatsappLinks?.customer) {
-          setTimeout(() => {
-            window.open(result.data.whatsappLinks.customer, '_blank');
-          }, 2000);
-        }
-        
-        // Reset form on success
-        setFormData({
-          pickupLocation: '',
-          dropLocation: '',
-          tripType: 'one-way',
-          date: '',
-          time: '',
-          carType: 'sedan',
-          name: '',
-          phone: '',
-          email: '',
-        });
-        setPickupCoords(null);
-        setDropCoords(null);
-        setCalculatedDistance(null);
-        setEstimatedDuration('');
-      } else {
-        setSubmitMessage(`❌ ${result.message || 'Failed to submit booking. Please try again.'}`);
-      }
-      
-    } catch (error) {
-      console.error('Booking submission error:', error);
-      setSubmitMessage(`❌ Network error: ${error.message}. Please check your connection and try again.`);
-    } finally {
-      setIsLoading(false);
+      setCalculatedDistance(null);
+      setEstimatedDuration("");
+      setPickupCoords(null);
+      setDropCoords(null);
+    } else {
+      setSubmitMessage(
+        `❌ ${result.message || "Failed to submit booking. Please try again."}`
+      );
     }
-  };
+  } catch (error: any) {
+    console.error("Booking submission error:", error);
+    setSubmitMessage(
+      `❌ Network error: ${error.message}. Please check your connection and try again.`
+    );
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   const handleInputChange = (field: keyof BookingFormData, value: string) => {
     setFormData(prev => ({
