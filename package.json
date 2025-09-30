@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:full": "npm run server & npm run dev",
+    "dev:full": "npm run server & wait-on tcp:3001 && npm run dev",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
