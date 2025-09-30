@@ -103,7 +103,8 @@ const BookingForm: React.FC = () => {
 
       console.log('Submitting booking:', bookingData);
 
-      const response = await fetch('/api/book', {
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+      const response = await fetch(`${apiBaseUrl}/api/book`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
