@@ -85,6 +85,7 @@ const BookingForm: React.FC = () => {
     setErrors(validationErrors);
     
     if (validationErrors.length > 0) {
+      setSubmitMessage('Please fix the errors above and try again.');
       return;
     }
 
@@ -100,6 +101,8 @@ const BookingForm: React.FC = () => {
         dropCoordinates: dropCoords
       };
 
+      console.log('Submitting booking:', bookingData);
+
       const response = await fetch('/api/book', {
         method: 'POST',
         headers: {
@@ -108,10 +111,17 @@ const BookingForm: React.FC = () => {
         body: JSON.stringify(bookingData),
       });
 
+      console.log('Response status:', response.status);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const result = await response.json();
+      console.log('Response data:', result);
 
       if (result.success) {
-        setSubmitMessage(`Booking submitted successfully! Booking ID: ${result.data.bookingId}. We will contact you shortly.`);
+        setSubmitMessage(`✅ Booking submitted successfully! Booking ID: ${result.data.bookingId}. We will contact you shortly.`);
         
         // Auto-open WhatsApp for customer
         if (result.data.whatsappLinks?.customer) {
@@ -119,29 +129,30 @@ const BookingForm: React.FC = () => {
             window.open(result.data.whatsappLinks.customer, '_blank');
           }, 2000);
         }
+        
+        // Reset form on success
+        setFormData({
+          pickupLocation: '',
+          dropLocation: '',
+          tripType: 'one-way',
+          date: '',
+          time: '',
+          carType: 'sedan',
+          name: '',
+          phone: '',
+          email: '',
+        });
+        setPickupCoords(null);
+        setDropCoords(null);
+        setCalculatedDistance(null);
+        setEstimatedDuration('');
       } else {
-        setSubmitMessage(result.message || 'Failed to submit booking. Please try again.');
+        setSubmitMessage(`❌ ${result.message || 'Failed to submit booking. Please try again.'}`);
       }
       
-      // Reset form
-      setFormData({
-        pickupLocation: '',
-        dropLocation: '',
-        tripType: 'one-way',
-        date: '',
-        time: '',
-        carType: 'sedan',
-        name: '',
-        phone: '',
-        email: '',
-      });
-      setPickupCoords(null);
-      setDropCoords(null);
-      setCalculatedDistance(null);
-      setEstimatedDuration('');
-      
     } catch (error) {
-      setSubmitMessage('Failed to submit booking. Please try again.');
+      console.error('Booking submission error:', error);
+      setSubmitMessage(`❌ Network error: ${error.message}. Please check your connection and try again.`);
     } finally {
       setIsLoading(false);
     }

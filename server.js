@@ -8,7 +8,10 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:5173', 'http://localhost:3001', 'https://happyridedroptaxi.com'],
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.static('dist'));
 
@@ -27,6 +30,20 @@ const createTransporter = () => {
     }
   });
 };
+
+// Test email configuration on startup
+const testEmailConfig = async () => {
+  try {
+    const transporter = createTransporter();
+    await transporter.verify();
+    console.log('✅ Email configuration verified successfully');
+  } catch (error) {
+    console.error('❌ Email configuration error:', error.message);
+  }
+};
+
+// Test email config on startup
+testEmailConfig();
 
 // Telegram notification function
 const sendTelegramMessage = async (chatId, message) => {
@@ -272,6 +289,8 @@ const calculateEstimatedPrice = (carType, distance, tripType) => {
 
 // API Routes
 app.post('/api/book', async (req, res) => {
+  console.log('📝 Booking request received:', req.body);
+  
   try {
     const bookingData = req.body;
     
@@ -279,6 +298,7 @@ app.post('/api/book', async (req, res) => {
     const { errors, distance } = validateBookingData(bookingData);
     
     if (errors.length > 0) {
+      console.log('❌ Validation errors:', errors);
       return res.status(400).json({
         success: false,
         message: 'Validation failed',
@@ -288,24 +308,100 @@ app.post('/api/book', async (req, res) => {
 
     // Generate notification messages
     const { bookingId, adminMessage, customerMessage, estimatedPrice } = generateNotificationMessages(bookingData, distance);
+    console.log('✅ Booking ID generated:', bookingId);
 
     // Add booking ID to data
     const bookingWithId = { ...bookingData, bookingId, distance, estimatedPrice };
 
-    const transporter = createTransporter();
+    let emailResults = { admin: false, customer: false };
+    let telegramResult = false;
 
-    // Admin email
-    const adminMailOptions = {
-      from: process.env.GMAIL_USER || 'happyridedroptaxi@gmail.com',
-      to: 'happyridedroptaxi@gmail.com',
-      subject: `New Taxi Booking Request - ${bookingData.name} (${bookingId})`,
-      html: generateAdminEmailHtml(bookingWithId, distance)
-    };
+    // Send emails with error handling
+    try {
+      const transporter = createTransporter();
+      
+      // Admin email
+      const adminMailOptions = {
+        from: process.env.GMAIL_USER || 'happyridedroptaxi@gmail.com',
+        to: 'happyridedroptaxi@gmail.com',
+        subject: `New Taxi Booking Request - ${bookingData.name} (${bookingId})`,
+        html: generateAdminEmailHtml(bookingWithId, distance)
+      };
 
-    // Customer email
-    let customerMailOptions = null;
-    if (bookingData.email) {
-      customerMailOptions = {
+      await transporter.sendMail(adminMailOptions);
+      console.log('✅ Admin email sent successfully');
+      emailResults.admin = true;
+
+      // Customer email
+      if (bookingData.email) {
+        const customerMailOptions = {
+          from: process.env.GMAIL_USER || 'happyridedroptaxi@gmail.com',
+          to: bookingData.email,
+          subject: `Booking Confirmation - Happy Ride Drop Taxi (${bookingId})`,
+          html: generateCustomerEmailHtml(bookingWithId, distance)
+        };
+        
+        await transporter.sendMail(customerMailOptions);
+        console.log('✅ Customer email sent successfully');
+        emailResults.customer = true;
+      }
+    } catch (emailError) {
+      console.error('❌ Email error:', emailError);
+      // Don't fail the booking if email fails
+    }
+
+    // Send Telegram notification
+    try {
+      await sendTelegramMessage(TELEGRAM_ADMIN_CHAT_ID, adminMessage);
+      telegramResult = true;
+    } catch (telegramError) {
+      console.error('❌ Telegram error:', telegramError);
+      // Don't fail the booking if Telegram fails
+    }
+
+    // Generate WhatsApp and Telegram sharing links
+    const adminWhatsAppMessage = encodeURIComponent(adminMessage);
+    const customerWhatsAppMessage = encodeURIComponent(customerMessage);
+    const adminTelegramMessage = encodeURIComponent(adminMessage);
+    const customerTelegramMessage = encodeURIComponent(customerMessage);
+
+    console.log('✅ Booking processed successfully:', {
+      bookingId,
+      emailResults,
+      telegramResult
+    });
+
+    res.json({
+      success: true,
+      message: `Booking request submitted successfully! Booking ID: ${bookingId}. We will contact you shortly.`,
+      data: {
+        bookingId,
+        estimatedDistance: distance,
+        estimatedPrice,
+        notifications: {
+          email: emailResults,
+          telegram: telegramResult
+        },
+        whatsappLinks: {
+          admin: `https://wa.me/919087520500?text=${adminWhatsAppMessage}`,
+          customer: `https://wa.me/${bookingData.phone.replace(/[^0-9]/g, '')}?text=${customerWhatsAppMessage}`
+        },
+        telegramLinks: {
+          admin: `https://t.me/share/url?url=&text=${adminTelegramMessage}`,
+          customer: `https://t.me/share/url?url=&text=${customerTelegramMessage}`
+        }
+      }
+    });
+
+  } catch (error) {
+    console.error('❌ Booking error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error. Please try again later.',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
         from: process.env.GMAIL_USER || 'happyridedroptaxi@gmail.com',
         to: bookingData.email,
         subject: `Booking Confirmation - Happy Ride Drop Taxi (${bookingId})`,
