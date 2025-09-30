@@ -4,14 +4,14 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "dev:full": "npm run server & npm run dev",
+    "dev": "NODE_ENV=development vite",
+    "dev:full": "NODE_ENV=development npm run server & npm run dev",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit -p tsconfig.app.json",
-    "server": "node server.js",
-    "start": "npm run build && npm run server"
+    "server": "NODE_ENV=development node server.js",
+    "start": "npm run build && NODE_ENV=production node server.js"
   },
   "dependencies": {
     "@googlemaps/js-api-loader": "^1.16.10",

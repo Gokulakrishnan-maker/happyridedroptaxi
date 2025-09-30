@@ -23,8 +23,11 @@ app.use(cors({
 }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-app.use(express.static('dist'));
 
+// Only serve static files in production
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static('dist'));
+}
 // Telegram Bot Configuration
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '8275666233:AAGEPTLZUWgzQt6-LUyQidHV-QOG4Q5dMM0';
 const TELEGRAM_ADMIN_CHAT_ID = process.env.TELEGRAM_ADMIN_CHAT_ID || '8486626603 ';
@@ -441,11 +444,22 @@ app.use((req, res, next) => {
   next();
 });
 
-// Serve React app for all other routes
-app.get('*', (req, res) => {
-  console.log(`🌐 Serving React app for: ${req.path}`);
-  res.sendFile(join(__dirname, 'dist', 'index.html'));
-});
+// Serve React app for all other routes (only in production)
+if (process.env.NODE_ENV === 'production') {
+  app.get('*', (req, res) => {
+    console.log(`🌐 Serving React app for: ${req.path}`);
+    res.sendFile(join(__dirname, 'dist', 'index.html'));
+  });
+} else {
+  // In development, only handle API routes
+  app.get('*', (req, res) => {
+    console.log(`🔧 Development mode: API-only server for: ${req.path}`);
+    res.status(404).json({ 
+      success: false, 
+      message: 'API endpoint not found. Frontend is served by Vite dev server.' 
+    });
+  });
+}
 
 // Error handling middleware
 app.use((error, req, res, next) => {
