@@ -16,11 +16,12 @@ export default defineConfig({
     host: true,
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:3001',
+        target: 'http://localhost:3001',
         changeOrigin: true,
         secure: false,
-        timeout: 10000,
-        proxyTimeout: 10000,
+        timeout: 30000,
+        proxyTimeout: 30000,
+        rewrite: (path) => path,
         configure: (proxy, _options) => {
           proxy.on('error', (err, _req, _res) => {
             console.log('proxy error', err);

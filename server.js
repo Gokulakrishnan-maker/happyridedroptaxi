@@ -357,47 +357,10 @@ app.post('/api/book', async (req, res) => {
     let telegramResult = false;
 
     // Send emails with error handling
-    // Only attempt to send emails if properly configured
-    const isEmailConfigured = process.env.GMAIL_PASS && 
-                              process.env.GMAIL_PASS !== 'your-app-password' && 
-                              process.env.GMAIL_PASS !== 'your-gmail-app-password';
-
-    if (isEmailConfigured) {
-      try {
-      const transporter = createTransporter();
-      
-      // Admin email
-      const adminMailOptions = {
-        from: process.env.GMAIL_USER || 'happyridedroptaxi@gmail.com',
-        to: 'happyridedroptaxi@gmail.com',
-        subject: `New Taxi Booking Request - ${bookingData.name} (${bookingId})`,
-        html: generateAdminEmailHtml(bookingWithId, distance)
-      };
-
-      await transporter.sendMail(adminMailOptions);
-      console.log('✅ Admin email sent successfully');
-      emailResults.admin = true;
-
-      // Customer email
-      if (bookingData.email) {
-        const customerMailOptions = {
-          from: process.env.GMAIL_USER || 'happyridedroptaxi@gmail.com',
-          to: bookingData.email,
-          subject: `Booking Confirmation - Happy Ride Drop Taxi (${bookingId})`,
-          html: generateCustomerEmailHtml(bookingWithId, distance)
-        };
-        
-        await transporter.sendMail(customerMailOptions);
-        console.log('✅ Customer email sent successfully');
-        emailResults.customer = true;
-      }
-      } catch (emailError) {
-      console.error('❌ Email error:', emailError);
-      // Don't fail the booking if email fails
-      }
-    } else {
-      console.log('📧 Email sending skipped - not configured');
-    }
+    // Email sending temporarily disabled to prevent SMTP timeout errors
+    console.log('📧 Email sending disabled - booking will proceed without email notifications');
+    emailResults.admin = false;
+    emailResults.customer = false;
 
     // Send Telegram notification
     try {
