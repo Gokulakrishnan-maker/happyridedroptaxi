@@ -59,9 +59,9 @@ const GoogleMapsLoader: React.FC<GoogleMapsLoaderProps> = ({ children }) => {
         // Wait a bit for Places API to be fully ready
         setTimeout(() => {
           window._googleMapsApiLoading = false;
+          setIsLoaded(true);
           resolve();
         }, 500);
-        resolve();
       };
 
       setLoadingProgress('Loading Google Maps API...');

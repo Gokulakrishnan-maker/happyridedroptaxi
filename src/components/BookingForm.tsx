@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Select from 'react-select';
-import { MapPin, Calendar, Clock, Car, User, Phone, Send, AlertCircle, Navigation } from 'lucide-react';
+import { MapPin, Calendar, Clock, Car, User, Phone, Send, AlertCircle, Navigation, Mail } from 'lucide-react';
 import { BookingFormData, ValidationError, BookingResponse } from '../types/booking';
 import LocationInput from './LocationInput';
 import { useDistanceCalculation } from '../hooks/useDistanceCalculation';
@@ -17,6 +17,7 @@ const BookingForm: React.FC = () => {
     carType: 'sedan',
     name: '',
     phone: '',
+    email: '',
   });
 
   const [errors, setErrors] = useState<ValidationError[]>([]);
@@ -59,6 +60,10 @@ const BookingForm: React.FC = () => {
       newErrors.push({ field: 'phone', message: 'Please enter a valid 10-digit phone number' });
     }
 
+    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.push({ field: 'email', message: 'Please enter a valid email address' });
+    }
+
     // Distance validation
     if (calculatedDistance) {
       const minDistance = formData.tripType === 'one-way' ? 130 : 250;
@@ -87,10 +92,36 @@ const BookingForm: React.FC = () => {
     setSubmitMessage('');
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      setSubmitMessage('Booking submitted successfully! We will contact you shortly.');
+      const bookingData = {
+        ...formData,
+        distance: calculatedDistance,
+        estimatedDuration,
+        pickupCoordinates: pickupCoords,
+        dropCoordinates: dropCoords
+      };
+
+      const response = await fetch('/api/book', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bookingData),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setSubmitMessage(`Booking submitted successfully! Booking ID: ${result.data.bookingId}. We will contact you shortly.`);
+        
+        // Auto-open WhatsApp for customer
+        if (result.data.whatsappLinks?.customer) {
+          setTimeout(() => {
+            window.open(result.data.whatsappLinks.customer, '_blank');
+          }, 2000);
+        }
+      } else {
+        setSubmitMessage(result.message || 'Failed to submit booking. Please try again.');
+      }
       
       // Reset form
       setFormData({
@@ -102,6 +133,7 @@ const BookingForm: React.FC = () => {
         carType: 'sedan',
         name: '',
         phone: '',
+        email: '',
       });
       setPickupCoords(null);
       setDropCoords(null);
@@ -269,6 +301,25 @@ const BookingForm: React.FC = () => {
                     )}
                   </div>
 
+                  {/* Email */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      <Mail className="inline w-4 h-4 mr-2" />
+                      Email Address (Optional)
+                    </label>
+                    <input
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => handleInputChange('email', e.target.value)}
+                      placeholder="Enter your email address"
+                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors bg-white ${
+                        getFieldError('email') ? 'border-red-500' : 'border-gray-300'
+                      }`}
+                    />
+                    {getFieldError('email') && (
+                      <p className="text-red-500 text-sm mt-1">{getFieldError('email')}</p>
+                    )}
+                  </div>
                   {/* Phone */}
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">

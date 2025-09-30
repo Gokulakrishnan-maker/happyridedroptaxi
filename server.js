@@ -12,6 +12,11 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('dist'));
 
+// Telegram Bot Configuration
+const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
+const TELEGRAM_ADMIN_CHAT_ID = process.env.TELEGRAM_ADMIN_CHAT_ID || '';
+const TELEGRAM_API_URL = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}`;
+
 // Email configuration
 const createTransporter = () => {
   return nodemailer.createTransporter({
@@ -21,6 +26,36 @@ const createTransporter = () => {
       pass: process.env.GMAIL_PASS || 'your-app-password' // Use App Password for Gmail
     }
   });
+};
+
+// Telegram notification function
+const sendTelegramMessage = async (chatId, message) => {
+  if (!TELEGRAM_BOT_TOKEN || !chatId) {
+    console.log('Telegram not configured, skipping notification');
+    return;
+  }
+
+  try {
+    const response = await fetch(`${TELEGRAM_API_URL}/sendMessage`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: message,
+        parse_mode: 'HTML',
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Telegram API error: ${response.status}`);
+    }
+
+    console.log('Telegram message sent successfully');
+  } catch (error) {
+    console.error('Telegram notification error:', error);
+  }
 };
 
 // Validation functions
@@ -67,6 +102,50 @@ const validateBookingData = (data) => {
   return { errors, distance: actualDistance };
 };
 
+// Generate notification messages
+const generateNotificationMessages = (data, distance) => {
+  const bookingId = `HRD${Date.now()}`;
+  const estimatedPrice = calculateEstimatedPrice(data.carType, distance, data.tripType);
+
+  const adminMessage = `🚗 NEW BOOKING REQUEST
+
+📋 Booking ID: ${bookingId}
+👤 Customer: ${data.name}
+📱 Phone: ${data.phone}
+${data.email ? `📧 Email: ${data.email}` : ''}
+📍 From: ${data.pickupLocation}
+📍 To: ${data.dropLocation}
+🚗 Vehicle: ${data.carType.toUpperCase()}
+📅 Date: ${data.date}
+⏰ Time: ${data.time}
+🛣️ Trip: ${data.tripType}
+📏 Distance: ~${distance}km
+${data.estimatedDuration ? `⏱️ Duration: ${data.estimatedDuration}` : ''}
+💰 Estimated Price: ${estimatedPrice}
+
+Please call customer to confirm booking.`;
+
+  const customerMessage = `Hi ${data.name}! 👋
+
+Thank you for booking with Happy Ride Drop Taxi! 🚗
+
+📋 Your booking details:
+🆔 Booking ID: ${bookingId}
+📍 ${data.pickupLocation} → ${data.dropLocation}
+📅 ${data.date} at ${data.time}
+🚗 Vehicle: ${data.carType.toUpperCase()}
+📏 Distance: ~${distance}km
+${data.estimatedDuration ? `⏱️ Duration: ${data.estimatedDuration}` : ''}
+💰 Estimated Price: ${estimatedPrice}
+
+We'll call you within 30 minutes to confirm.
+
+For any queries: +91 9087520500
+Happy Ride Drop Taxi 🌟`;
+
+  return { bookingId, adminMessage, customerMessage, estimatedPrice };
+};
+
 // Email templates
 const generateAdminEmailHtml = (data, distance) => {
   return `
@@ -82,6 +161,7 @@ const generateAdminEmailHtml = (data, distance) => {
         <div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #e9ecef;">
           <h3 style="color: #10B981; margin-bottom: 15px; font-size: 18px;">📍 Trip Information</h3>
           <table style="width: 100%; border-collapse: collapse;">
+            <tr><td style="padding: 8px 0; font-weight: bold; color: #495057;">Booking ID:</td><td style="padding: 8px 0; color: #6c757d;">${data.bookingId}</td></tr>
             <tr><td style="padding: 8px 0; font-weight: bold; color: #495057;">Pickup Location:</td><td style="padding: 8px 0; color: #6c757d;">${data.pickupLocation}</td></tr>
             <tr><td style="padding: 8px 0; font-weight: bold; color: #495057;">Drop Location:</td><td style="padding: 8px 0; color: #6c757d;">${data.dropLocation}</td></tr>
             <tr><td style="padding: 8px 0; font-weight: bold; color: #495057;">Trip Type:</td><td style="padding: 8px 0; color: #6c757d;">${data.tripType.charAt(0).toUpperCase() + data.tripType.slice(1)}</td></tr>
@@ -97,6 +177,7 @@ const generateAdminEmailHtml = (data, distance) => {
           <table style="width: 100%; border-collapse: collapse;">
             <tr><td style="padding: 8px 0; font-weight: bold; color: #495057;">Name:</td><td style="padding: 8px 0; color: #6c757d;">${data.name}</td></tr>
             <tr><td style="padding: 8px 0; font-weight: bold; color: #495057;">Phone:</td><td style="padding: 8px 0; color: #6c757d;">${data.phone}</td></tr>
+            ${data.email ? `<tr><td style="padding: 8px 0; font-weight: bold; color: #495057;">Email:</td><td style="padding: 8px 0; color: #6c757d;">${data.email}</td></tr>` : ''}
           </table>
         </div>
         
@@ -131,6 +212,7 @@ const generateCustomerEmailHtml = (data, distance) => {
         <div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #e9ecef;">
           <h3 style="color: #10B981; margin-bottom: 15px; font-size: 18px;">📍 Your Trip Details</h3>
           <table style="width: 100%; border-collapse: collapse;">
+            <tr><td style="padding: 8px 0; font-weight: bold; color: #495057;">Booking ID:</td><td style="padding: 8px 0; color: #6c757d;">${data.bookingId}</td></tr>
             <tr><td style="padding: 8px 0; font-weight: bold; color: #495057;">From:</td><td style="padding: 8px 0; color: #6c757d;">${data.pickupLocation}</td></tr>
             <tr><td style="padding: 8px 0; font-weight: bold; color: #495057;">To:</td><td style="padding: 8px 0; color: #6c757d;">${data.dropLocation}</td></tr>
             <tr><td style="padding: 8px 0; font-weight: bold; color: #495057;">Trip Type:</td><td style="padding: 8px 0; color: #6c757d;">${data.tripType.charAt(0).toUpperCase() + data.tripType.slice(1)}</td></tr>
@@ -204,23 +286,32 @@ app.post('/api/book', async (req, res) => {
       });
     }
 
+    // Generate notification messages
+    const { bookingId, adminMessage, customerMessage, estimatedPrice } = generateNotificationMessages(bookingData, distance);
+
+    // Add booking ID to data
+    const bookingWithId = { ...bookingData, bookingId, distance, estimatedPrice };
+
     const transporter = createTransporter();
 
     // Admin email
     const adminMailOptions = {
       from: process.env.GMAIL_USER || 'happyridedroptaxi@gmail.com',
       to: 'happyridedroptaxi@gmail.com',
-      subject: `New Taxi Booking Request - ${bookingData.name}`,
-      html: generateAdminEmailHtml(bookingData, distance)
+      subject: `New Taxi Booking Request - ${bookingData.name} (${bookingId})`,
+      html: generateAdminEmailHtml(bookingWithId, distance)
     };
 
     // Customer email
-    const customerMailOptions = {
-      from: process.env.GMAIL_USER || 'happyridedroptaxi@gmail.com',
-      to: bookingData.email || bookingData.phone + '@temp.com', // In real app, collect email
-      subject: 'Booking Confirmation - Happy Ride Drop Taxi',
-      html: generateCustomerEmailHtml(bookingData, distance)
-    };
+    let customerMailOptions = null;
+    if (bookingData.email) {
+      customerMailOptions = {
+        from: process.env.GMAIL_USER || 'happyridedroptaxi@gmail.com',
+        to: bookingData.email,
+        subject: `Booking Confirmation - Happy Ride Drop Taxi (${bookingId})`,
+        html: generateCustomerEmailHtml(bookingWithId, distance)
+      };
+    }
 
     // Send emails
     try {
@@ -230,51 +321,40 @@ app.post('/api/book', async (req, res) => {
       console.error('Admin email error:', emailError);
     }
 
-    try {
-      if (bookingData.email) {
+    if (customerMailOptions) {
+      try {
         await transporter.sendMail(customerMailOptions);
         console.log('Customer email sent successfully');
+      } catch (emailError) {
+        console.error('Customer email error:', emailError);
       }
-    } catch (emailError) {
-      console.error('Customer email error:', emailError);
     }
 
-    // Generate WhatsApp messages
-    const adminWhatsAppMessage = encodeURIComponent(
-      `🚗 NEW BOOKING REQUEST\n\n` +
-      `👤 Customer: ${bookingData.name}\n` +
-      `📱 Phone: ${bookingData.phone}\n` +
-      `📍 From: ${bookingData.pickupLocation}\n` +
-      `📍 To: ${bookingData.dropLocation}\n` +
-      `🚗 Vehicle: ${bookingData.carType.toUpperCase()}\n` +
-      `📅 Date: ${bookingData.date}\n` +
-      `⏰ Time: ${bookingData.time}\n` +
-      `🛣️ Trip: ${bookingData.tripType}\n` +
-      `📏 Distance: ~${distance}km\n\n` +
-      `Please call customer to confirm booking.`
-    );
+    // Send Telegram notifications
+    await sendTelegramMessage(TELEGRAM_ADMIN_CHAT_ID, adminMessage);
 
-    const customerWhatsAppMessage = encodeURIComponent(
-      `Hi ${bookingData.name}! 👋\n\n` +
-      `Thank you for booking with Happy Ride Drop Taxi! 🚗\n\n` +
-      `📋 Your booking details:\n` +
-      `📍 ${bookingData.pickupLocation} → ${bookingData.dropLocation}\n` +
-      `📅 ${bookingData.date} at ${bookingData.time}\n` +
-      `🚗 Vehicle: ${bookingData.carType.toUpperCase()}\n\n` +
-      `We'll call you within 30 minutes to confirm.\n\n` +
-      `For any queries: +91 9087520500\n` +
-      `Happy Ride Drop Taxi 🌟`
-    );
+    // Generate WhatsApp messages
+    const adminWhatsAppMessage = encodeURIComponent(adminMessage);
+    const customerWhatsAppMessage = encodeURIComponent(customerMessage);
+
+    // Generate Telegram messages (URL encoded for sharing)
+    const adminTelegramMessage = encodeURIComponent(adminMessage);
+    const customerTelegramMessage = encodeURIComponent(customerMessage);
 
     res.json({
       success: true,
-      message: 'Booking request submitted successfully! We will contact you shortly.',
+      message: `Booking request submitted successfully! Booking ID: ${bookingId}. We will contact you shortly.`,
       data: {
-        bookingId: `HRD${Date.now()}`,
+        bookingId,
         estimatedDistance: distance,
+        estimatedPrice,
         whatsappLinks: {
           admin: `https://wa.me/919087520500?text=${adminWhatsAppMessage}`,
           customer: `https://wa.me/${bookingData.phone.replace(/[^0-9]/g, '')}?text=${customerWhatsAppMessage}`
+        },
+        telegramLinks: {
+          admin: `https://t.me/share/url?url=&text=${adminTelegramMessage}`,
+          customer: `https://t.me/share/url?url=&text=${customerTelegramMessage}`
         }
       }
     });
