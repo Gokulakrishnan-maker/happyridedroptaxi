@@ -103,7 +103,7 @@ const BookingForm: React.FC = () => {
 
     console.log("Submitting booking:", bookingData);
 
-    // Always use relative URL in development to leverage Vite proxy
+    // Use relative URL to leverage Vite proxy
     const apiUrl = '/api/book';
     
     console.log("API URL:", apiUrl);
@@ -112,10 +112,8 @@ const BookingForm: React.FC = () => {
       method: "POST",
       headers: { 
         "Content-Type": "application/json",
-        "Accept": "application/json",
-        "X-Requested-With": "XMLHttpRequest"
+        "Accept": "application/json"
       },
-      credentials: 'same-origin',
       body: JSON.stringify(bookingData),
     });
 
@@ -126,9 +124,9 @@ const BookingForm: React.FC = () => {
       const errorText = await response.text();
       console.error("Response error:", errorText);
       
-      // Check if response is HTML (404 page) instead of JSON
-      if (errorText.includes('<!DOCTYPE html>') || errorText.includes('<html')) {
-        throw new Error(`Backend server not accessible. The API request returned a webpage instead of JSON data. Please ensure the backend server is running on port 3001.`);
+      // Check if we got HTML instead of JSON (server not running)
+      if (errorText.includes('<!DOCTYPE html>')) {
+        throw new Error(`Cannot connect to backend server. Please ensure the server is running.`);
       }
       
       throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
@@ -172,10 +170,10 @@ const BookingForm: React.FC = () => {
   } catch (error: any) {
     console.error("Booking submission error:", error);
     
-    let errorMessage = `❌ Network error: ${error.message}`;
+    let errorMessage = `❌ ${error.message}`;
     
-    if (error.message.includes('Backend server not accessible') || error.message.includes('Failed to fetch')) {
-      errorMessage = `❌ Cannot connect to server. Please ensure both frontend and backend servers are running. Try refreshing the page or contact support.`;
+    if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+      errorMessage = `❌ Cannot connect to server. Please try again or contact support.`;
     }
     
     setSubmitMessage(errorMessage);
