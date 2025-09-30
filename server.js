@@ -42,12 +42,23 @@ const createTransporter = () => {
 
 // Test email configuration on startup
 const testEmailConfig = async () => {
+  // Skip email test if not configured to prevent server startup issues
+  if (!process.env.GMAIL_PASS || 
+      process.env.GMAIL_PASS === 'your-app-password' || 
+      process.env.GMAIL_PASS === 'your-gmail-app-password') {
+    console.log('📧 Email not configured - skipping email test');
+    return;
+  }
+
   try {
     const transporter = createTransporter();
-    await transporter.verify();
+    await Promise.race([
+      transporter.verify(),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 5000))
+    ]);
     console.log('✅ Email configuration verified successfully');
   } catch (error) {
-    console.error('❌ Email configuration error:', error.message);
+    console.warn('⚠️ Email configuration warning:', error.message);
   }
 };
 
