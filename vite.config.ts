@@ -7,7 +7,12 @@ export default defineConfig({
   define: {
     global: 'globalThis',
   },
+  envPrefix: 'VITE_',
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
+  server: {
+    port: 5173,
+    host: true
+  }
 });

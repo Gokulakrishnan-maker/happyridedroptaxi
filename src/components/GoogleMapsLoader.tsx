@@ -34,15 +34,20 @@ const GoogleMapsLoader: React.FC<GoogleMapsLoaderProps> = ({ children }) => {
       return;
     }
 
-    const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+    const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || 'AIzaSyDliN_7olCSHuyWpsu05NhRQ5BI98aIngM';
     
     if (!apiKey) {
-      setError('Google Maps API key not found. Please ensure VITE_GOOGLE_MAPS_API_KEY is set in your environment variables.');
+      setError('Google Maps API key not configured. Please check your environment configuration.');
       return;
     }
 
-    if (apiKey === 'your-google-maps-api-key') {
-      setError('Please replace the placeholder API key with your actual Google Maps API key.');
+    if (apiKey === 'your-google-maps-api-key' || apiKey === 'AIzaSyDliN_7olCSHuyWpsu05NhRQ5BI98aIngM') {
+      console.log('Using provided Google Maps API key');
+    }
+
+    // Validate API key format
+    if (!apiKey.startsWith('AIza')) {
+      setError('Invalid Google Maps API key format. API keys should start with "AIza".');
       return;
     }
 
