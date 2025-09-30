@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Select from 'react-select';
-import { MapPin, Calendar, Clock, Car, User, Phone, Send, AlertCircle, Navigation, Mail } from 'lucide-react';
+import { MapPin, Calendar, Clock, Car, User, Phone, Send, AlertCircle, Navigation, Mail, IndianRupee, MessageCircle } from 'lucide-react';
 import { BookingFormData, ValidationError, BookingResponse } from '../types/booking';
 import LocationInput from './LocationInput';
 import { useDistanceCalculation } from '../hooks/useDistanceCalculation';
