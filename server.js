@@ -198,5 +198,9 @@ app.use((error, req, res, next) => {
 
 // ------------------ START SERVER ------------------
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`🚀 Backend server running on http://localhost:${PORT}`);
+  console.log(`📡 API endpoints available at:`);
+  console.log(`   - POST http://localhost:${PORT}/api/book`);
+  console.log(`   - GET  http://localhost:${PORT}/api/health`);
+  console.log(`   - GET  http://localhost:${PORT}/api/test`);
 });

@@ -122,15 +122,15 @@ const BookingForm: React.FC = () => {
     console.log("Response status:", response.status);
     console.log("Response headers:", Object.fromEntries(response.headers.entries()));
 
-    // Check if response is HTML (404 page) instead of JSON
-    const contentType = response.headers.get('content-type');
-    if (contentType && contentType.includes('text/html')) {
-      throw new Error(`Server returned HTML instead of JSON. This usually means the backend server is not running or API routes are not accessible. Status: ${response.status}`);
-    }
-
     if (!response.ok) {
       const errorText = await response.text();
       console.error("Response error:", errorText);
+      
+      // Check if response is HTML (404 page) instead of JSON
+      if (errorText.includes('<!DOCTYPE html>') || errorText.includes('<html')) {
+        throw new Error(`Backend server not accessible. The API request returned a webpage instead of JSON data. Please ensure the backend server is running on port 3001.`);
+      }
+      
       throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
     }
 
@@ -171,9 +171,14 @@ const BookingForm: React.FC = () => {
     }
   } catch (error: any) {
     console.error("Booking submission error:", error);
-    setSubmitMessage(
-      `❌ Network error: ${error.message}. Please check your connection and try again.`
-    );
+    
+    let errorMessage = `❌ Network error: ${error.message}`;
+    
+    if (error.message.includes('Backend server not accessible') || error.message.includes('Failed to fetch')) {
+      errorMessage = `❌ Cannot connect to server. Please ensure both frontend and backend servers are running. Try refreshing the page or contact support.`;
+    }
+    
+    setSubmitMessage(errorMessage);
   } finally {
     setIsLoading(false);
   }
