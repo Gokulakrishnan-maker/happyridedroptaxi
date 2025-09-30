@@ -402,67 +402,6 @@ app.post('/api/book', async (req, res) => {
     });
   }
 });
-        from: process.env.GMAIL_USER || 'happyridedroptaxi@gmail.com',
-        to: bookingData.email,
-        subject: `Booking Confirmation - Happy Ride Drop Taxi (${bookingId})`,
-        html: generateCustomerEmailHtml(bookingWithId, distance)
-      };
-    }
-
-    // Send emails
-    try {
-      await transporter.sendMail(adminMailOptions);
-      console.log('Admin email sent successfully');
-    } catch (emailError) {
-      console.error('Admin email error:', emailError);
-    }
-
-    if (customerMailOptions) {
-      try {
-        await transporter.sendMail(customerMailOptions);
-        console.log('Customer email sent successfully');
-      } catch (emailError) {
-        console.error('Customer email error:', emailError);
-      }
-    }
-
-    // Send Telegram notifications
-    await sendTelegramMessage(TELEGRAM_ADMIN_CHAT_ID, adminMessage);
-
-    // Generate WhatsApp messages
-    const adminWhatsAppMessage = encodeURIComponent(adminMessage);
-    const customerWhatsAppMessage = encodeURIComponent(customerMessage);
-
-    // Generate Telegram messages (URL encoded for sharing)
-    const adminTelegramMessage = encodeURIComponent(adminMessage);
-    const customerTelegramMessage = encodeURIComponent(customerMessage);
-
-    res.json({
-      success: true,
-      message: `Booking request submitted successfully! Booking ID: ${bookingId}. We will contact you shortly.`,
-      data: {
-        bookingId,
-        estimatedDistance: distance,
-        estimatedPrice,
-        whatsappLinks: {
-          admin: `https://wa.me/919087520500?text=${adminWhatsAppMessage}`,
-          customer: `https://wa.me/${bookingData.phone.replace(/[^0-9]/g, '')}?text=${customerWhatsAppMessage}`
-        },
-        telegramLinks: {
-          admin: `https://t.me/share/url?url=&text=${adminTelegramMessage}`,
-          customer: `https://t.me/share/url?url=&text=${customerTelegramMessage}`
-        }
-      }
-    });
-
-  } catch (error) {
-    console.error('Booking error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Server error. Please try again later.'
-    });
-  }
-});
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
