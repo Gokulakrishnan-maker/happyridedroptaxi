@@ -109,6 +109,7 @@ const BookingForm: React.FC = () => {
         headers: {
           'Content-Type': 'application/json',
         },
+        mode: 'cors',
         body: JSON.stringify(bookingData),
       });
 
