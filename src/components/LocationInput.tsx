@@ -27,6 +27,7 @@ const LocationInput: React.FC<LocationInputProps> = ({
   const [initError, setInitError] = useState<string | null>(null);
   const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isUpdatingRef = useRef(false);
+  const preventUpdateRef = useRef(false);
 
   // Initialize autocomplete
   useEffect(() => {
@@ -63,13 +64,11 @@ const LocationInput: React.FC<LocationInputProps> = ({
 
         // Add place changed listener with proper isolation
         const placeChangedListener = () => {
-          if (isUpdatingRef.current) return;
+          if (isUpdatingRef.current || preventUpdateRef.current) return;
           
           const place = autocompleteRef.current?.getPlace();
           
           if (place && place.formatted_address) {
-            preventUpdateRef.current = true;
-            
             const coordinates = place.geometry?.location ? {
               lat: place.geometry.location.lat(),
               lng: place.geometry.location.lng()
@@ -81,7 +80,10 @@ const LocationInput: React.FC<LocationInputProps> = ({
             onChange(place.formatted_address, coordinates);
             setIsLoading(false);
             
-            setTimeout(() => { isUpdatingRef.current = false; }, 100);
+            setTimeout(() => { 
+              isUpdatingRef.current = false;
+              preventUpdateRef.current = false;
+            }, 100);
           }
         };
         
@@ -127,13 +129,13 @@ const LocationInput: React.FC<LocationInputProps> = ({
 
   // Sync external value changes
   useEffect(() => {
-    if (inputRef.current && !isUpdatingRef.current) {
+    if (inputRef.current && !isUpdatingRef.current && !preventUpdateRef.current) {
       inputRef.current.value = value;
     }
   }, [value]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (isUpdatingRef.current) return;
+    if (isUpdatingRef.current || preventUpdateRef.current) return;
     
     const newValue = e.target.value;
     onChange(newValue);
@@ -154,7 +156,7 @@ const LocationInput: React.FC<LocationInputProps> = ({
   };
 
   const handleFocus = () => {
-    if (isUpdatingRef.current) return;
+    if (isUpdatingRef.current || preventUpdateRef.current) return;
     
     setIsLoading(false);
     

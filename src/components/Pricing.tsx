@@ -4,7 +4,7 @@ import { Check, Car, IndianRupee, ArrowRight, RotateCcw } from 'lucide-react';
 const pricingPlans = [
   {
     name: 'Sedan',
-    image: 'https://happyridedroptaxi.com/assets/sedan.png',
+    image: '/assets/sedan.png',
     price: '₹14/km',
     description: 'Comfortable and affordable',
     features: [
@@ -19,7 +19,7 @@ const pricingPlans = [
   },
    {
     name: 'Etios',
-    image: 'https://happyridedroptaxi.com/assets/etios.png', 
+    image: '/assets/etios.png', 
     price: '₹15/km',
     description: 'Reliable and efficient',
     features: [
@@ -34,7 +34,7 @@ const pricingPlans = [
   },
   {
     name: 'SUV',
-    image: 'https://happyridedroptaxi.com/assets/suv.png', // Put this in public/assets
+    image: '/assets/suv.png',
     price: '₹19/km',
     description: 'Spacious and premium',
     features: [
@@ -50,7 +50,7 @@ const pricingPlans = [
   },
   {
     name: 'Innova',
-    image: 'https://happyridedroptaxi.com/assets/innova.png', // Put this in public/assets
+    image: '/assets/innova.png',
     price: '₹20/km',
     description: 'Luxury and comfort',
     features: [
@@ -67,7 +67,7 @@ const pricingPlans = [
   },
     {
     name: 'Innova Crysta',
-    image: 'https://happyridedroptaxi.com//assets/innova-crysta.png',
+    image: '/assets/innova-crysta.png',
     price: '₹24/km',
     description: 'Premium comfort and space',
     features: [

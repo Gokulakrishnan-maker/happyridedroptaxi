@@ -37,7 +37,12 @@ const GoogleMapsLoader: React.FC<GoogleMapsLoaderProps> = ({ children }) => {
     const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
     
     if (!apiKey) {
-      setError('Google Maps API key not configured. Please add VITE_GOOGLE_MAPS_API_KEY to your .env file. Get your API key from Google Cloud Console and enable Maps JavaScript API and Places API.');
+      setError('Google Maps API key not found. Please ensure VITE_GOOGLE_MAPS_API_KEY is set in your environment variables.');
+      return;
+    }
+
+    if (apiKey === 'your-google-maps-api-key') {
+      setError('Please replace the placeholder API key with your actual Google Maps API key.');
       return;
     }
 
@@ -48,8 +53,9 @@ const GoogleMapsLoader: React.FC<GoogleMapsLoaderProps> = ({ children }) => {
     // Create a global promise to manage loading
     window._googleMapsApiLoadedPromise = new Promise<void>((resolve, reject) => {
       const timeoutId = setTimeout(() => {
+        setError('Google Maps API loading timeout. Please check your internet connection and API key.');
         reject(new Error('Google Maps API loading timeout'));
-      }, 15000); // 15 second timeout
+      }, 20000); // 20 second timeout
 
       // Global callback function
       window.initGoogleMaps = () => {

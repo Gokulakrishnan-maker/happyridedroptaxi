@@ -16,6 +16,7 @@ const AnalogClock: React.FC<AnalogClockProps> = ({
   const [selectedMinute, setSelectedMinute] = useState<number>(0);
   const [isAM, setIsAM] = useState(true);
   const [isSelectingHour, setIsSelectingHour] = useState(true);
+  const [isDragging, setIsDragging] = useState(false);
   const clockRef = useRef<HTMLDivElement>(null);
 
   // Initialize from existing value
@@ -35,6 +36,9 @@ const AnalogClock: React.FC<AnalogClockProps> = ({
 
   const handleClockClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (!clockRef.current) return;
+
+    event.preventDefault();
+    event.stopPropagation();
 
     const rect = clockRef.current.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
@@ -59,6 +63,14 @@ const AnalogClock: React.FC<AnalogClockProps> = ({
       const snappedMinute = Math.round(minute / 5) * 5;
       setSelectedMinute(snappedMinute === 60 ? 0 : snappedMinute);
     }
+  };
+
+  const handleMouseDown = () => {
+    setIsDragging(true);
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
   };
 
   const getHandStyle = () => {
@@ -228,8 +240,11 @@ const AnalogClock: React.FC<AnalogClockProps> = ({
         <div className="p-8 flex justify-center">
           <div
             ref={clockRef}
-            className="relative w-64 h-64 bg-gray-100 rounded-full cursor-pointer select-none"
+            className={`relative w-64 h-64 bg-gray-100 rounded-full cursor-pointer select-none ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
             onClick={handleClockClick}
+            onMouseDown={handleMouseDown}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
           >
             {/* Clock Numbers */}
             {renderClockNumbers()}

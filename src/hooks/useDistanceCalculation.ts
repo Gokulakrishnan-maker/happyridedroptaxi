@@ -22,12 +22,18 @@ export const useDistanceCalculation = () => {
 
     try {
       if (!window.google?.maps) {
-        throw new Error('Google Maps not loaded');
+        setIsCalculating(false);
+        throw new Error('Google Maps API not available');
       }
 
       const service = new window.google.maps.DistanceMatrixService();
       
       return new Promise((resolve, reject) => {
+        const timeoutId = setTimeout(() => {
+          setIsCalculating(false);
+          reject(new Error('Distance calculation timeout'));
+        }, 10000);
+
         service.getDistanceMatrix({
           origins: [new window.google.maps.LatLng(origin.lat, origin.lng)],
           destinations: [new window.google.maps.LatLng(destination.lat, destination.lng)],
@@ -36,6 +42,7 @@ export const useDistanceCalculation = () => {
           avoidHighways: false,
           avoidTolls: false
         }, (response, status) => {
+          clearTimeout(timeoutId);
           setIsCalculating(false);
 
           if (status === window.google.maps.DistanceMatrixStatus.OK && response) {

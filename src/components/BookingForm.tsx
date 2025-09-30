@@ -200,10 +200,10 @@ const BookingForm: React.FC = () => {
 
   // Updated car types with actual images
  const carTypes = [
-  { value: 'sedan', label: 'Sedan', description: 'Comfortable for 4 passengers', image: '/cars/sedan.png' },
-  { value: 'etios', label: 'Etios', description: 'Economic choice for 4 passengers', image: '/cars/etios.png' },
-  { value: 'suv', label: 'SUV', description: 'Spacious for 6-7 passengers', image: '/cars/suv.png' },
-  { value: 'innova', label: 'Innova', description: 'Premium comfort for 6-7 passengers', image: '/cars/innova.png' },
+  { value: 'sedan', label: 'Sedan', description: 'Comfortable for 4 passengers', image: '/assets/sedan.png' },
+  { value: 'etios', label: 'Etios', description: 'Economic choice for 4 passengers', image: '/assets/etios.png' },
+  { value: 'suv', label: 'SUV', description: 'Spacious for 6-7 passengers', image: '/assets/suv.png' },
+  { value: 'innova', label: 'Innova', description: 'Premium comfort for 6-7 passengers', image: '/assets/innova.png' },
 ];
 
 
