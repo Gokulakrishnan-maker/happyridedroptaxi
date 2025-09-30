@@ -42,26 +42,20 @@ const LocationInput: React.FC<LocationInputProps> = ({
         // Add place changed listener
         autocompleteRef.current.addListener('place_changed', () => {
           const place = autocompleteRef.current?.getPlace();
-
+          
           if (place && place.formatted_address) {
-            const coordinates = place.geometry?.location
-              ? {
-                  lat: place.geometry.location.lat(),
-                  lng: place.geometry.location.lng()
-                }
-              : undefined;
+            const coordinates = place.geometry?.location ? {
+              lat: place.geometry.location.lat(),
+              lng: place.geometry.location.lng()
+            } : undefined;
 
             onChange(place.formatted_address, coordinates);
-          } else {
-            console.warn('Google Autocomplete: no place data returned');
+            setIsLoading(false);
           }
-
-          // ✅ Always stop spinner
-          setIsLoading(false);
         });
+
       } catch (error) {
         console.error('Error initializing Google Maps Autocomplete:', error);
-        setIsLoading(false);
       }
     };
 
@@ -83,27 +77,17 @@ const LocationInput: React.FC<LocationInputProps> = ({
 
     return () => {
       if (autocompleteRef.current) {
-        window.google?.maps?.event?.clearInstanceListeners(
-          autocompleteRef.current
-        );
+        window.google?.maps?.event?.clearInstanceListeners(autocompleteRef.current);
       }
     };
   }, [onChange]);
 
-  // 🔹 Input handler with fallback timeout
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     onChange(newValue);
-
+    
     if (newValue.length > 2) {
       setIsLoading(true);
-
-      // ✅ Auto-hide spinner if nothing comes back
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 2000);
-    } else {
-      setIsLoading(false);
     }
   };
 
@@ -123,7 +107,7 @@ const LocationInput: React.FC<LocationInputProps> = ({
           type="text"
           value={value}
           onChange={handleInputChange}
-          onFocus={() => setIsLoading(false)}
+          onFocus={handleFocus}
           className={`w-full px-4 py-3 pr-10 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors ${
             error ? 'border-red-300' : 'border-gray-300'
           }`}
