@@ -21,7 +21,8 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
 }));
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(express.static('dist'));
 
 // Telegram Bot Configuration
@@ -101,6 +102,12 @@ const sendTelegramMessage = async (chatId, message) => {
 const validateBookingData = (data) => {
   const errors = [];
   
+  // Check if data exists
+  if (!data || typeof data !== 'object') {
+    errors.push({ field: 'general', message: 'Invalid booking data format' });
+    return { errors, distance: 0 };
+  }
+  
   if (!data.pickupLocation?.trim()) {
     errors.push({ field: 'pickupLocation', message: 'Pickup location is required' });
   }
@@ -128,7 +135,7 @@ const validateBookingData = (data) => {
   }
 
   // Simulate distance validation (in real app, integrate with mapping service)
-  const actualDistance = data.distance || Math.floor(Math.random() * 300) + 100;
+  const actualDistance = data.distance || data.calculatedDistance || Math.floor(Math.random() * 300) + 130;
   
   if (data.tripType === 'one-way' && actualDistance < 130) {
     errors.push({ field: 'distance', message: 'One-way trips require minimum 130 km distance' });
@@ -312,12 +319,19 @@ const calculateEstimatedPrice = (carType, distance, tripType) => {
 // API Routes
 app.post('/api/book', async (req, res) => {
   console.log('📝 POST /api/book - Booking request received');
-  console.log('Request body:', req.body);
-  console.log('Request headers:', req.headers);
-  
-  console.log('📝 Booking request received:', req.body);
   
   try {
+    // Add request validation
+    if (!req.body) {
+      console.log('❌ No request body received');
+      return res.status(400).json({
+        success: false,
+        message: 'No booking data received'
+      });
+    }
+
+    console.log('Request body:', JSON.stringify(req.body, null, 2));
+    
     const bookingData = req.body;
     
     // Validate booking data
@@ -430,9 +444,10 @@ app.post('/api/book', async (req, res) => {
 
   } catch (error) {
     console.error('❌ Booking error:', error);
+    console.error('Error stack:', error.stack);
     res.status(500).json({
       success: false,
-      message: 'Server error. Please try again later.',
+      message: 'Internal server error. Please try again later.',
       error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }

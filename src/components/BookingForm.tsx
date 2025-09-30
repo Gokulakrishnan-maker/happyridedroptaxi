@@ -103,22 +103,6 @@ const BookingForm: React.FC = () => {
 
       console.log('Submitting booking:', bookingData);
 
-      // Try direct connection first, fallback to proxy
-      // Test backend connection first
-      console.log('Testing backend connection...');
-      const testResponse = await fetch('/api/test', {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-        },
-      });
-      
-      if (!testResponse.ok) {
-        throw new Error(`Backend test failed: ${testResponse.status}`);
-      }
-      
-      console.log('Backend connection test successful');
-      
       // Submit booking
       const response = await fetch('/api/book', {
         method: 'POST',
