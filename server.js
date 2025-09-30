@@ -298,6 +298,10 @@ const calculateEstimatedPrice = (carType, distance, tripType) => {
 
 // API Routes
 app.post('/api/book', async (req, res) => {
+  console.log('📝 POST /api/book - Booking request received');
+  console.log('Request body:', req.body);
+  console.log('Request headers:', req.headers);
+  
   console.log('📝 Booking request received:', req.body);
   
   try {
@@ -414,11 +418,25 @@ app.post('/api/book', async (req, res) => {
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
+  console.log('📋 GET /api/health - Health check requested');
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
+});
+
+// Test endpoint for debugging
+app.get('/api/test', (req, res) => {
+  console.log('🧪 GET /api/test - Test endpoint accessed');
+  res.json({ message: 'Backend server is working!', timestamp: new Date().toISOString() });
+});
+
+// Log all incoming requests for debugging
+app.use((req, res, next) => {
+  console.log(`📡 ${req.method} ${req.path} - ${new Date().toISOString()}`);
+  next();
 });
 
 // Serve React app for all other routes
 app.get('*', (req, res) => {
+  console.log(`🌐 Serving React app for: ${req.path}`);
   res.sendFile(join(__dirname, 'dist', 'index.html'));
 });
 
