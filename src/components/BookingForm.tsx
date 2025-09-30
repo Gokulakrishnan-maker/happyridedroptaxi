@@ -145,8 +145,8 @@ const BookingForm: React.FC = () => {
           window.open(result.data.whatsappLinks.customer, '_blank');
         }, 2000);
       }
-
-      // Reset form
+      // Try backend server first, then fallback to proxy
+      let apiUrl = 'http://localhost:3001/api/book';
       setFormData({
         pickupLocation: "",
         dropLocation: "",
@@ -154,8 +154,9 @@ const BookingForm: React.FC = () => {
         date: "",
         time: "",
         carType: "sedan",
-        name: "",
+          "Accept": "application/json",
         phone: "",
+        mode: 'cors',
         email: "",
       });
       setCalculatedDistance(null);
@@ -209,21 +210,46 @@ const BookingForm: React.FC = () => {
     setErrors(prev => prev.filter(error => error.field !== field));
     
     // Calculate distance if both locations have coordinates (with updated coords)
-    const updatedPickupCoords = field === 'pickupLocation' ? coords : pickupCoords;
     const updatedDropCoords = field === 'dropLocation' ? coords : dropCoords;
     
     if (updatedPickupCoords && updatedDropCoords) {
       try {
         const distance = await calculateDistance(updatedPickupCoords, updatedDropCoords);
-        if (distance) {
-          setCalculatedDistance(distance.distance);
-          setEstimatedDuration(distance.duration);
-        }
-      } catch (error) {
-        console.error('Error calculating distance:', error);
-        // Fallback to Haversine calculation
-        const haversineDistance = calculateHaversineDistance(updatedPickupCoords, updatedDropCoords);
-        setCalculatedDistance(Math.round(haversineDistance));
+        // If direct connection fails, try proxy
+        if (response.status === 0 || errorText.includes('<!DOCTYPE html>')) {
+          console.log("Trying proxy fallback...");
+          const proxyResponse = await fetch('/api/book', {
+            method: "POST",
+            headers: { 
+              "Content-Type": "application/json",
+              "Accept": "application/json",
+            },
+            body: JSON.stringify(bookingData),
+          const proxyResult = await proxyResponse.json();
+          console.log("Proxy API Response:", proxyResult);
+          
+          if (proxyResult.success) {
+            setSubmitMessage(
+              `✅ Booking submitted successfully! Booking ID: ${proxyResult.data.bookingId}. We will contact you shortly.`
+            );
+            // Reset form and clear data
+            setFormData({
+              pickupLocation: "",
+              dropLocation: "",
+              tripType: "one-way",
+              date: "",
+              time: "",
+              carType: "sedan",
+              name: "",
+              phone: "",
+              email: "",
+            });
+            setCalculatedDistance(null);
+            setEstimatedDuration("");
+            setPickupCoords(null);
+            setDropCoords(null);
+            return;
+      setSubmitMessage(`❌ Cannot connect to backend server. Please ensure the server is running.`);
         setEstimatedDuration('Estimated');
       }
     }
