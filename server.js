@@ -4,6 +4,7 @@ import nodemailer from "nodemailer";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import { config } from "dotenv";
+import fetch from "node-fetch"; // ✅ Added for Telegram
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -20,6 +21,7 @@ app.use(
       "http://localhost:5173",
       "http://localhost:3001",
       "https://happyridedroptaxi.com",
+      "https://happyridedroptaxi.onrender.com", // ✅ Added Render domain
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -106,7 +108,6 @@ app.post("/api/book", async (req, res) => {
   const bookingId = `HRD${Date.now()}`;
   console.log("✅ Booking ID:", bookingId);
 
-  // Create booking message
   const message = `
 📌 *New Booking Received*
 🆔 Booking ID: ${bookingId}
@@ -121,12 +122,9 @@ app.post("/api/book", async (req, res) => {
 ⏳ Duration: ${estimatedDuration || "N/A"}
 `;
 
-  // Send Telegram + Email
   await sendTelegramMessage(message);
-
   await sendEmail("New Booking Confirmation", message.replace(/\n/g, "<br/>"));
 
-  // Respond to client
   res.json({
     success: true,
     message: "Booking created successfully",
@@ -149,7 +147,7 @@ app.get("/api/test", (req, res) => {
 
 // ------------------ CATCH-ALL ------------------
 app.get("*", (req, res, next) => {
-  if (req.path.startsWith("/api")) return next(); // don’t block API
+  if (req.path.startsWith("/api")) return next();
 
   if (process.env.NODE_ENV === "production") {
     res.sendFile(join(__dirname, "dist", "index.html"));
@@ -169,7 +167,6 @@ app.use((error, req, res, next) => {
 });
 
 // ------------------ START SERVER ------------------
-
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
