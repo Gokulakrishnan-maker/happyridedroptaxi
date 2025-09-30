@@ -5,6 +5,7 @@ import { BookingFormData, ValidationError, BookingResponse } from '../types/book
 import LocationInput from './LocationInput';
 import { useDistanceCalculation } from '../hooks/useDistanceCalculation';
 import AnalogClock from './AnalogClock';
+import GoogleMapsLoader from './GoogleMapsLoader';
 
 const BookingForm: React.FC = () => {
   const [formData, setFormData] = useState<BookingFormData>({
@@ -139,16 +140,23 @@ const BookingForm: React.FC = () => {
     // Clear field-specific errors
     setErrors(prev => prev.filter(error => error.field !== field));
     
-    // Calculate distance if both locations have coordinates
-    if (pickupCoords && dropCoords) {
+    // Calculate distance if both locations have coordinates (with updated coords)
+    const updatedPickupCoords = field === 'pickupLocation' ? coords : pickupCoords;
+    const updatedDropCoords = field === 'dropLocation' ? coords : dropCoords;
+    
+    if (updatedPickupCoords && updatedDropCoords) {
       try {
-        const distance = await calculateDistance(pickupCoords, dropCoords);
+        const distance = await calculateDistance(updatedPickupCoords, updatedDropCoords);
         if (distance) {
           setCalculatedDistance(distance.distance);
           setEstimatedDuration(distance.duration);
         }
       } catch (error) {
         console.error('Error calculating distance:', error);
+        // Fallback to Haversine calculation
+        const fallbackDistance = calculateHaversineDistance(updatedPickupCoords, updatedDropCoords);
+        setCalculatedDistance(fallbackDistance);
+        setEstimatedDuration('Estimated');
       }
     }
   };
@@ -206,29 +214,31 @@ const BookingForm: React.FC = () => {
           <div className="bg-white rounded-2xl shadow-2xl p-8 md:p-12 border-4 border-yellow-400">
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Location Fields */}
-              <div className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-6">
-                {/* Pickup Location */}
-                <LocationInput
-                  label="Pickup Location"
-                  value={formData.pickupLocation}
-                  onChange={(value, coords) => handleLocationChange('pickupLocation', value, coords)}
-                  placeholder="Enter pickup location"
-                  error={getFieldError('pickupLocation')}
-                  icon={<MapPin className="inline w-4 h-4 mr-2 text-blue-600" />}
-                />
+              <GoogleMapsLoader>
+                <div className="space-y-6">
+                  <div className="grid md:grid-cols-2 gap-6">
+                  {/* Pickup Location */}
+                  <LocationInput
+                    label="Pickup Location"
+                    value={formData.pickupLocation}
+                    onChange={(value, coords) => handleLocationChange('pickupLocation', value, coords)}
+                    placeholder="Enter pickup location"
+                    error={getFieldError('pickupLocation')}
+                    icon={<MapPin className="inline w-4 h-4 mr-2 text-blue-600" />}
+                  />
 
-                {/* Drop Location */}
-                <LocationInput
-                  label="Drop Location"
-                  value={formData.dropLocation}
-                  onChange={(value, coords) => handleLocationChange('dropLocation', value, coords)}
-                  placeholder="Enter drop location"
-                  error={getFieldError('dropLocation')}
-                  icon={<MapPin className="inline w-4 h-4 mr-2 text-emerald-600" />}
-                />
+                  {/* Drop Location */}
+                  <LocationInput
+                    label="Drop Location"
+                    value={formData.dropLocation}
+                    onChange={(value, coords) => handleLocationChange('dropLocation', value, coords)}
+                    placeholder="Enter drop location"
+                    error={getFieldError('dropLocation')}
+                    icon={<MapPin className="inline w-4 h-4 mr-2 text-emerald-600" />}
+                  />
+                  </div>
                 </div>
-              </div>
+              </GoogleMapsLoader>
 
               {/* Customer Details */}
               <div className="bg-gradient-to-r from-yellow-50 to-yellow-100 p-6 rounded-xl border-2 border-yellow-300">
