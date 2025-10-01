@@ -81,11 +81,12 @@ const BookingForm: React.FC = () => {
  const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
 
+  // Validate form
   const validationErrors = validateForm();
   setErrors(validationErrors);
 
   if (validationErrors.length > 0) {
-    setSubmitMessage("Please fix the errors above and try again.");
+    setSubmitMessage("❌ Please fix the errors above and try again.");
     return;
   }
 
@@ -103,47 +104,40 @@ const BookingForm: React.FC = () => {
 
     console.log("Submitting booking:", bookingData);
 
-    // Use relative URL to leverage Vite proxy
+    // API endpoint - update if your backend URL differs
     const apiUrl = '/api/estimate';
-    
-    console.log("API URL:", apiUrl);
 
     const response = await fetch(apiUrl, {
       method: "POST",
-      headers: { 
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
       body: JSON.stringify(bookingData),
     });
 
-    console.log("Response status:", response.status);
-    console.log("Response headers:", Object.fromEntries(response.headers.entries()));
+    // Handle 404 explicitly
+    if (response.status === 404) {
+      throw new Error("❌ API endpoint not found (404). Please check the server URL.");
+    }
 
     if (!response.ok) {
-      let errorMessage = `HTTP error! status: ${response.status}`;
-      
+      let errorMessage = `❌ HTTP error! status: ${response.status}`;
+
       try {
-        const responseText = await response.text();
-        console.error("Response error:", responseText);
-        
-        // Try to parse as JSON first
+        const text = await response.text();
+        // Try parsing as JSON for better error message
         try {
-          const errorData = JSON.parse(responseText);
-          errorMessage = errorData.message || errorMessage;
-          console.error("Server error response:", errorData);
-        } catch (parseError) {
-          // If not JSON, check if it's HTML (server not running)
-          if (responseText.includes('<!DOCTYPE html>')) {
-            throw new Error(`Cannot connect to backend server. Please ensure the server is running.`);
+          const json = JSON.parse(text);
+          errorMessage = json.message || errorMessage;
+        } catch {
+          if (text.includes('<!DOCTYPE html>')) {
+            errorMessage = "❌ Cannot connect to backend server. Is it running?";
+          } else {
+            errorMessage = `${errorMessage}, response: ${text}`;
           }
-          errorMessage = `${errorMessage}, response: ${responseText}`;
         }
-      } catch (parseError) {
-        console.error("Failed to read response:", parseError);
-        errorMessage = `${errorMessage}, failed to read response`;
+      } catch (readError) {
+        console.error("Failed to read response:", readError);
       }
-      
+
       throw new Error(errorMessage);
     }
 
@@ -160,7 +154,8 @@ const BookingForm: React.FC = () => {
           window.open(result.data.whatsappLinks.customer, '_blank');
         }, 2000);
       }
-      
+
+      // Reset form
       setFormData({
         pickupLocation: "",
         dropLocation: "",
@@ -176,20 +171,22 @@ const BookingForm: React.FC = () => {
       setEstimatedDuration("");
       setPickupCoords(null);
       setDropCoords(null);
+      setErrors([]);
     } else {
-      setSubmitMessage(
-        `❌ ${result.message || "Failed to submit booking. Please try again."}`
-      );
+      setSubmitMessage(`❌ ${result.message || "Failed to submit booking. Please try again."}`);
     }
   } catch (error: any) {
     console.error("Booking submission error:", error);
-    
+
     let errorMessage = `❌ ${error.message}`;
-    
-    if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
-      errorMessage = `❌ Cannot connect to server. Please try again or contact support.`;
+
+    if (
+      error.message.includes('Failed to fetch') ||
+      error.message.includes('NetworkError')
+    ) {
+      errorMessage = "❌ Cannot connect to server. Please try again or contact support.";
     }
-    
+
     setSubmitMessage(errorMessage);
   } finally {
     setIsLoading(false);
